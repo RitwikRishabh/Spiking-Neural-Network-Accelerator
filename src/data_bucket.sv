@@ -35,7 +35,5 @@ module data_bucket (interface r);
       sumOfCycleTimes += cycleTime;
       averageCycleTime = sumOfCycleTimes / cycleCounter;
       $display("Execution cycle= %d, Cycle Time= %d, Average CycleTime=%f, Average Throughput=%f", cycleCounter, cycleTime, averageCycleTime, averageThroughput);
-      
-      
     end
   endmodule

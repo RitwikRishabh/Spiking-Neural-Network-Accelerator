@@ -257,7 +257,7 @@ endmodule
 ///////////////////////////// TESTBENCH///////////////////////////////////////////
 module pe_tb;
     Channel #(.hsProtocol(P4PhaseBD), .WIDTH(64)) intf  [1:0] ();
-    data_generator #(.WIDTH(64), .SENDVALUE(64'h0000_0000_0011_1111_1111)) d0 (intf[0]);
+    data_generator #(.WIDTH(64)) d0 (intf[0]);
     peTB pe (intf[0], intf[1]);
     data_bucket #(.WIDTH(64)) db (intf[1]);
 endmodule
