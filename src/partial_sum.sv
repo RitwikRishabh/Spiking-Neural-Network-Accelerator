@@ -5,7 +5,7 @@ module partial_sum (interface in, interface out);
     parameter ADDER_NUM = 3'b000;
     parameter ADDER_COUNT = 3'b100;
     parameter WIDTH = 64;
-    parameter WIDTH_MEMBRANE_POTENTIAL = 8;
+    parameter WIDTH_MEMBRANE_POTENTIAL = 13;
     parameter THRESHOLD = 16;
     parameter ADDER_ADDR = 4'b0110;
     
@@ -32,23 +32,23 @@ module partial_sum (interface in, interface out);
             in.Receive(inputPacket);
             case(inputPacket[WIDTH-1:WIDTH-4])
                 addrPE1 : begin
-                    partialPE1 = inputPacket[7:0];
+                    partialPE1 = inputPacket[12:0];
                 end
                 addrPE2 : begin
-                    partialPE2 = inputPacket[7:0];
+                    partialPE2 = inputPacket[12:0];
                 end
                 addrPE3 : begin
-                    partialPE3 = inputPacket[7:0];
+                    partialPE3 = inputPacket[12:0];
                 end
                 addrPE4 : begin
-                    partialPE4 = inputPacket[7:0];
+                    partialPE4 = inputPacket[12:0];
                 end
                 addrPE5 : begin
-                    partialPE5 = inputPacket[7:0];
+                    partialPE5 = inputPacket[12:0];
                 end
                 addrWR : begin
                     if (inputPacket[WIDTH-9:WIDTH-10] == membranePotType) begin
-                        membranePotential = inputPacket[WIDTH-27:WIDTH-34];
+                        membranePotential = inputPacket[0:+WIDTH_MEMBRANE_POTENTIAL];
                     end
                 end
             endcase
