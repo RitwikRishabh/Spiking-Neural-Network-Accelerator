@@ -138,6 +138,7 @@ module memory(interface memRead, memWrite, T, memRow, memCol, data);
     logic ofMapMem[TIMESTEPS-1:0][OFMAP_ROWS-1:0][OFMAP_COLS-1:0];
 
     int readType = 0, writeType = 0, row = 0, col = 0, t = 0;
+    int i = 0, j = 0, fp = 0;;
   
     logic [FILTER_WIDTH-1:0] filterMemPre [0:FILTER_ROWS*FILTER_COLS-1];
     logic ifmapMemPre [0:IFMAP_COLS*IFMAP_ROWS*TIMESTEPS-1];
@@ -148,7 +149,7 @@ module memory(interface memRead, memWrite, T, memRow, memCol, data);
 
     initial begin
         // Load filters
-        $readmemh("kernel_hex.mem", filterMemPre);
+        $readmemh("kernel_decimal.mem", filterMemPre);
         for (int fx = 0; fx < FILTER_ROWS; fx++) begin
             for (int fy = 0; fy < FILTER_COLS; fy++) begin
                 filterMem[fx][fy] = filterMemPre[FILTER_COLS * fx * fy];
@@ -194,7 +195,7 @@ module memory(interface memRead, memWrite, T, memRow, memCol, data);
                 fork
                     memRead.Receive(readType);
                     memRow.Receive(row);
-                    memCol.Receie(col);
+                    memCol.Receive(col);
                 join
                 if (readType == readIfmaps) begin
                     data.Send(ifMapMem[t][row][col]);
@@ -218,7 +219,7 @@ module memory(interface memRead, memWrite, T, memRow, memCol, data);
         fp = $fopen("out1_test.txt");
         for(i = 0; i < 21; i+=1) begin
             for(j=0;j<21;j+=1) begin
-                $fdisplay(fp,"OF MAP TIMESTEP 1 LOCATION %d, %d, OUTPUT:: %b",ofMapMem[0][i][j]);
+                $fdisplay(fp,"OF MAP TIMESTEP 1 LOCATION %d, %d, OUTPUT:: %b", i, j, ofMapMem[0][i][j]);
             end
         end
         $fclose(fp);
@@ -226,7 +227,7 @@ module memory(interface memRead, memWrite, T, memRow, memCol, data);
         fp = $fopen("out2_test.txt");
         for(i = 0; i < 21; i+=1) begin
             for(j=0;j<21;j+=1) begin
-                $fdisplay(fp,"OF MAP TIMESTEP 2 LOCATION %d, %d, OUTPUT:: %b",ofMapMem[1][i][j]);
+                $fdisplay(fp,"OF MAP TIMESTEP 2 LOCATION %d, %d, OUTPUT:: %b", i, j, ofMapMem[1][i][j]);
             end
         end 
         $fclose(fp);
@@ -237,7 +238,7 @@ module memory(interface memRead, memWrite, T, memRow, memCol, data);
 
 
 module memoryController(interface toFilter, toIfmap, fromOfmap);
-    Channel #(.hsProtocol(P4PhaseBD), .WIDTH(8)) intf[0:10];
+    Channel #(.hsProtocol(P4PhaseBD), .WIDTH(8)) intf [0:5]();
 
     memory #(.TIMESTEPS(10)) nocMem(.memRead(intf[0]), .memWrite(intf[1]), .T(intf[2]), .memRow(intf[3]), .memCol(intf[4]), .data(intf[5]));
     memory_interface #(.MEM_LATENCY(5)) nocMemInterface(.toMemRead(intf[0]), .toMemWrite(intf[1]), .toMemT(intf[2]), .toMemX(intf[3]), .toMemY(intf[4]), .fromMemGetData(intf[5]), .toNOCfilter(toFilter), .toNOCifmap(toIfmap), .fromNOC(fromOfmap));
