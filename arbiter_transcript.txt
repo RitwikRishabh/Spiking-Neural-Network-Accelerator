@@ -1,0 +1,488 @@
+# *** router_tb.d0                    0
+# *** router_tb.d1                    0
+# *** router_tb.d2                    0
+# *** router_tb.d3                    0
+# *** router_tb.d4                    0
+# *** router_tb.db0                    0
+# Start receiving in module router_tb.db0. Simulation time =                   0
+# *** router_tb.db1                    0
+# Start receiving in module router_tb.db1. Simulation time =                   0
+# *** router_tb.db2                    0
+# Start receiving in module router_tb.db2. Simulation time =                   0
+# *** router_tb.db3                    0
+# Start receiving in module router_tb.db3. Simulation time =                   0
+# *** router_tb.db4                    0
+# Start receiving in module router_tb.db4. Simulation time =                   0
+# Start sending in module router_tb.d0. Simulation time =             2000000
+# Start sending in module router_tb.d1. Simulation time =             2000000
+# Start sending in module router_tb.d2. Simulation time =             2000000
+# Start sending in module router_tb.d3. Simulation time =             2000000
+# Start sending in module router_tb.d4. Simulation time =             2000000
+# SENDING VALUE::::01010001000100010001000100010001
+# Finished sending in module router_tb.d0. Simulation time =             2000000
+# *** router_tb.d0                    2
+# SENDING VALUE::::01010010001000100010001000100010
+# Finished sending in module router_tb.d1. Simulation time =             2000000
+# *** router_tb.d1                    2
+# SENDING VALUE::::01010011001100110011001100110011
+# Finished sending in module router_tb.d2. Simulation time =             2000000
+# *** router_tb.d2                    2
+# SENDING VALUE::::01010100010001000100010001000100
+# Finished sending in module router_tb.d3. Simulation time =             2000000
+# *** router_tb.d3                    2
+# SENDING VALUE::::01010101010101010101010101010101
+# Finished sending in module router_tb.d4. Simulation time =             2000000
+# *** router_tb.d4                    2
+### router_tb.intf[0].Receive Stalled(                   2) @              2000000
+### router_tb.intf[1].Receive Stalled(                   2) @              2000000
+### router_tb.intf[2].Receive Stalled(                   2) @              2000000
+### router_tb.intf[3].Receive Stalled(                   2) @              2000000
+### router_tb.intf[4].Receive Stalled(                   2) @              2000000
+# SENDING PACKET TO EAST!!
+# SENDING PACKET TO EAST!!
+# Start sending in module router_tb.d0. Simulation time =             4000000
+# Start sending in module router_tb.d1. Simulation time =             4000000
+# Start sending in module router_tb.d2. Simulation time =             4000000
+# Start sending in module router_tb.d3. Simulation time =             4000000
+# Start sending in module router_tb.d4. Simulation time =             4000000
+# SENDING VALUE::::01010001000100010001000100010001
+# Finished sending in module router_tb.d0. Simulation time =             4000000
+# *** router_tb.d0                    4
+# SENDING VALUE::::01010101010101010101010101010101
+# Finished sending in module router_tb.d4. Simulation time =             4000000
+# *** router_tb.d4                    4
+### router_tb.intf[0].Receive Stalled(                   2) @              4000000
+### router_tb.intf[4].Receive Stalled(                   2) @              4000000
+# Start sending in module router_tb.d0. Simulation time =             6000000
+# Start sending in module router_tb.d4. Simulation time =             6000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   6) @              6000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @              6000000
+### router_tb.intf[6].Receive Stalled(                   6) @              6000000
+# Received Data:  85 ------ 01010101
+# Finished receiving in module router_tb.db1. Simulation time =             6000000
+# Execution cycle=          1, Cycle Time=          6, 
+# 
+#     Average CycleTime=6.000000, Average Throughput=0.166667
+# *** router_tb.db1                    6
+# Start receiving in module router_tb.db1. Simulation time =             6000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   4) @              8000000
+### router_tb.r.intf[21].Send Stalled(                   4) @              8000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[4].Send Stalled(                   2) @              8000000
+# SENDING VALUE::::01010101010101010101010101010101
+# Finished sending in module router_tb.d4. Simulation time =             8000000
+# *** router_tb.d4                    8
+# Start sending in module router_tb.d4. Simulation time =            10000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             10000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             10000000
+### router_tb.intf[6].Receive Stalled(                   4) @             10000000
+# Received Data:  17 ------ 00010001
+# Finished receiving in module router_tb.db1. Simulation time =            10000000
+# Execution cycle=          2, Cycle Time=          4, 
+# 
+#     Average CycleTime=5.000000, Average Throughput=0.200000
+# *** router_tb.db1                   10
+# Start receiving in module router_tb.db1. Simulation time =            10000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             12000000
+### router_tb.r.intf[11].Send Stalled(                  10) @             12000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[2].Send Stalled(                   8) @             12000000
+# SENDING VALUE::::01010011001100110011001100110011
+# Finished sending in module router_tb.d2. Simulation time =            12000000
+# *** router_tb.d2                   12
+# Start sending in module router_tb.d2. Simulation time =            14000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             14000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             14000000
+### router_tb.intf[6].Receive Stalled(                   4) @             14000000
+# Received Data:  85 ------ 01010101
+# Finished receiving in module router_tb.db1. Simulation time =            14000000
+# Execution cycle=          3, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.666667, Average Throughput=0.214286
+# *** router_tb.db1                   14
+# Start receiving in module router_tb.db1. Simulation time =            14000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             16000000
+### router_tb.r.intf[21].Send Stalled(                   8) @             16000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[4].Send Stalled(                   6) @             16000000
+# SENDING VALUE::::01010101010101010101010101010101
+# Finished sending in module router_tb.d4. Simulation time =            16000000
+# *** router_tb.d4                   16
+# Start sending in module router_tb.d4. Simulation time =            18000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             18000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             18000000
+### router_tb.intf[6].Receive Stalled(                   4) @             18000000
+# Received Data:  51 ------ 00110011
+# Finished receiving in module router_tb.db1. Simulation time =            18000000
+# Execution cycle=          4, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.500000, Average Throughput=0.222222
+# *** router_tb.db1                   18
+# Start receiving in module router_tb.db1. Simulation time =            18000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             20000000
+### router_tb.r.intf[11].Send Stalled(                   8) @             20000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[2].Send Stalled(                   6) @             20000000
+# SENDING VALUE::::01010011001100110011001100110011
+# Finished sending in module router_tb.d2. Simulation time =            20000000
+# *** router_tb.d2                   20
+# Start sending in module router_tb.d2. Simulation time =            22000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             22000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             22000000
+### router_tb.intf[6].Receive Stalled(                   4) @             22000000
+# Received Data:  85 ------ 01010101
+# Finished receiving in module router_tb.db1. Simulation time =            22000000
+# Execution cycle=          5, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.400000, Average Throughput=0.227273
+# *** router_tb.db1                   22
+# Start receiving in module router_tb.db1. Simulation time =            22000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             24000000
+### router_tb.r.intf[16].Send Stalled(                  22) @             24000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[3].Send Stalled(                  20) @             24000000
+# SENDING VALUE::::01010100010001000100010001000100
+# Finished sending in module router_tb.d3. Simulation time =            24000000
+# *** router_tb.d3                   24
+# Start sending in module router_tb.d3. Simulation time =            26000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             26000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             26000000
+### router_tb.intf[6].Receive Stalled(                   4) @             26000000
+# Received Data:  51 ------ 00110011
+# Finished receiving in module router_tb.db1. Simulation time =            26000000
+# Execution cycle=          6, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.333333, Average Throughput=0.230769
+# *** router_tb.db1                   26
+# Start receiving in module router_tb.db1. Simulation time =            26000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             28000000
+### router_tb.r.intf[11].Send Stalled(                   8) @             28000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[2].Send Stalled(                   6) @             28000000
+# SENDING VALUE::::01010011001100110011001100110011
+# Finished sending in module router_tb.d2. Simulation time =            28000000
+# *** router_tb.d2                   28
+# Start sending in module router_tb.d2. Simulation time =            30000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             30000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             30000000
+### router_tb.intf[6].Receive Stalled(                   4) @             30000000
+# Received Data:  68 ------ 01000100
+# Finished receiving in module router_tb.db1. Simulation time =            30000000
+# Execution cycle=          7, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.285714, Average Throughput=0.233333
+# *** router_tb.db1                   30
+# Start receiving in module router_tb.db1. Simulation time =            30000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             32000000
+### router_tb.r.intf[21].Send Stalled(                  16) @             32000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[4].Send Stalled(                  14) @             32000000
+# SENDING VALUE::::01010101010101010101010101010101
+# Finished sending in module router_tb.d4. Simulation time =            32000000
+# *** router_tb.d4                   32
+# Start sending in module router_tb.d4. Simulation time =            34000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             34000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             34000000
+### router_tb.intf[6].Receive Stalled(                   4) @             34000000
+# Received Data:  51 ------ 00110011
+# Finished receiving in module router_tb.db1. Simulation time =            34000000
+# Execution cycle=          8, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.250000, Average Throughput=0.235294
+# *** router_tb.db1                   34
+# Start receiving in module router_tb.db1. Simulation time =            34000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             36000000
+### router_tb.r.intf[1].Send Stalled(                  32) @             36000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[0].Send Stalled(                  30) @             36000000
+# SENDING VALUE::::01010001000100010001000100010001
+# Finished sending in module router_tb.d0. Simulation time =            36000000
+# *** router_tb.d0                   36
+# Start sending in module router_tb.d0. Simulation time =            38000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             38000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             38000000
+### router_tb.intf[6].Receive Stalled(                   4) @             38000000
+# Received Data:  85 ------ 01010101
+# Finished receiving in module router_tb.db1. Simulation time =            38000000
+# Execution cycle=          9, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.222222, Average Throughput=0.236842
+# *** router_tb.db1                   38
+# Start receiving in module router_tb.db1. Simulation time =            38000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             40000000
+### router_tb.r.intf[21].Send Stalled(                   8) @             40000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[4].Send Stalled(                   6) @             40000000
+# SENDING VALUE::::01010101010101010101010101010101
+# Finished sending in module router_tb.d4. Simulation time =            40000000
+# *** router_tb.d4                   40
+# Start sending in module router_tb.d4. Simulation time =            42000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             42000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             42000000
+### router_tb.intf[6].Receive Stalled(                   4) @             42000000
+# Received Data:  17 ------ 00010001
+# Finished receiving in module router_tb.db1. Simulation time =            42000000
+# Execution cycle=         10, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.200000, Average Throughput=0.238095
+# *** router_tb.db1                   42
+# Start receiving in module router_tb.db1. Simulation time =            42000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             44000000
+### router_tb.r.intf[11].Send Stalled(                  16) @             44000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[2].Send Stalled(                  14) @             44000000
+# SENDING VALUE::::01010011001100110011001100110011
+# Finished sending in module router_tb.d2. Simulation time =            44000000
+# *** router_tb.d2                   44
+# Start sending in module router_tb.d2. Simulation time =            46000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             46000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             46000000
+### router_tb.intf[6].Receive Stalled(                   4) @             46000000
+# Received Data:  85 ------ 01010101
+# Finished receiving in module router_tb.db1. Simulation time =            46000000
+# Execution cycle=         11, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.181818, Average Throughput=0.239130
+# *** router_tb.db1                   46
+# Start receiving in module router_tb.db1. Simulation time =            46000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             48000000
+### router_tb.r.intf[16].Send Stalled(                  24) @             48000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[3].Send Stalled(                  22) @             48000000
+# SENDING VALUE::::01010100010001000100010001000100
+# Finished sending in module router_tb.d3. Simulation time =            48000000
+# *** router_tb.d3                   48
+# Start sending in module router_tb.d3. Simulation time =            50000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             50000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             50000000
+### router_tb.intf[6].Receive Stalled(                   4) @             50000000
+# Received Data:  51 ------ 00110011
+# Finished receiving in module router_tb.db1. Simulation time =            50000000
+# Execution cycle=         12, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.166667, Average Throughput=0.240000
+# *** router_tb.db1                   50
+# Start receiving in module router_tb.db1. Simulation time =            50000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             52000000
+### router_tb.r.intf[11].Send Stalled(                   8) @             52000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[2].Send Stalled(                   6) @             52000000
+# SENDING VALUE::::01010011001100110011001100110011
+# Finished sending in module router_tb.d2. Simulation time =            52000000
+# *** router_tb.d2                   52
+# Start sending in module router_tb.d2. Simulation time =            54000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             54000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             54000000
+### router_tb.intf[6].Receive Stalled(                   4) @             54000000
+# Received Data:  68 ------ 01000100
+# Finished receiving in module router_tb.db1. Simulation time =            54000000
+# Execution cycle=         13, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.153846, Average Throughput=0.240741
+# *** router_tb.db1                   54
+# Start receiving in module router_tb.db1. Simulation time =            54000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             56000000
+### router_tb.r.intf[16].Send Stalled(                   8) @             56000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[3].Send Stalled(                   6) @             56000000
+# SENDING VALUE::::01010100010001000100010001000100
+# Finished sending in module router_tb.d3. Simulation time =            56000000
+# *** router_tb.d3                   56
+# Start sending in module router_tb.d3. Simulation time =            58000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             58000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             58000000
+### router_tb.intf[6].Receive Stalled(                   4) @             58000000
+# Received Data:  51 ------ 00110011
+# Finished receiving in module router_tb.db1. Simulation time =            58000000
+# Execution cycle=         14, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.142857, Average Throughput=0.241379
+# *** router_tb.db1                   58
+# Start receiving in module router_tb.db1. Simulation time =            58000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             60000000
+### router_tb.r.intf[11].Send Stalled(                   8) @             60000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[2].Send Stalled(                   6) @             60000000
+# SENDING VALUE::::01010011001100110011001100110011
+# Finished sending in module router_tb.d2. Simulation time =            60000000
+# *** router_tb.d2                   60
+# Start sending in module router_tb.d2. Simulation time =            62000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             62000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             62000000
+### router_tb.intf[6].Receive Stalled(                   4) @             62000000
+# Received Data:  68 ------ 01000100
+# Finished receiving in module router_tb.db1. Simulation time =            62000000
+# Execution cycle=         15, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.133333, Average Throughput=0.241935
+# *** router_tb.db1                   62
+# Start receiving in module router_tb.db1. Simulation time =            62000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             64000000
+### router_tb.r.intf[16].Send Stalled(                   8) @             64000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[3].Send Stalled(                   6) @             64000000
+# SENDING VALUE::::01010100010001000100010001000100
+# Finished sending in module router_tb.d3. Simulation time =            64000000
+# *** router_tb.d3                   64
+# Start sending in module router_tb.d3. Simulation time =            66000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             66000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             66000000
+### router_tb.intf[6].Receive Stalled(                   4) @             66000000
+# Received Data:  51 ------ 00110011
+# Finished receiving in module router_tb.db1. Simulation time =            66000000
+# Execution cycle=         16, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.125000, Average Throughput=0.242424
+# *** router_tb.db1                   66
+# Start receiving in module router_tb.db1. Simulation time =            66000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             68000000
+### router_tb.r.intf[11].Send Stalled(                   8) @             68000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[2].Send Stalled(                   6) @             68000000
+# SENDING VALUE::::01010011001100110011001100110011
+# Finished sending in module router_tb.d2. Simulation time =            68000000
+# *** router_tb.d2                   68
+# Start sending in module router_tb.d2. Simulation time =            70000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             70000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             70000000
+### router_tb.intf[6].Receive Stalled(                   4) @             70000000
+# Received Data:  68 ------ 01000100
+# Finished receiving in module router_tb.db1. Simulation time =            70000000
+# Execution cycle=         17, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.117647, Average Throughput=0.242857
+# *** router_tb.db1                   70
+# Start receiving in module router_tb.db1. Simulation time =            70000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             72000000
+### router_tb.r.intf[21].Send Stalled(                  32) @             72000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[4].Send Stalled(                  30) @             72000000
+# SENDING VALUE::::01010101010101010101010101010101
+# Finished sending in module router_tb.d4. Simulation time =            72000000
+# *** router_tb.d4                   72
+# Start sending in module router_tb.d4. Simulation time =            74000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             74000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             74000000
+### router_tb.intf[6].Receive Stalled(                   4) @             74000000
+# Received Data:  51 ------ 00110011
+# Finished receiving in module router_tb.db1. Simulation time =            74000000
+# Execution cycle=         18, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.111111, Average Throughput=0.243243
+# *** router_tb.db1                   74
+# Start receiving in module router_tb.db1. Simulation time =            74000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             76000000
+### router_tb.r.intf[1].Send Stalled(                  40) @             76000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[0].Send Stalled(                  38) @             76000000
+# SENDING VALUE::::01010001000100010001000100010001
+# Finished sending in module router_tb.d0. Simulation time =            76000000
+# *** router_tb.d0                   76
+# Start sending in module router_tb.d0. Simulation time =            78000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             78000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             78000000
+### router_tb.intf[6].Receive Stalled(                   4) @             78000000
+# Received Data:  85 ------ 01010101
+# Finished receiving in module router_tb.db1. Simulation time =            78000000
+# Execution cycle=         19, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.105263, Average Throughput=0.243590
+# *** router_tb.db1                   78
+# Start receiving in module router_tb.db1. Simulation time =            78000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             80000000
+### router_tb.r.intf[21].Send Stalled(                   8) @             80000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[4].Send Stalled(                   6) @             80000000
+# SENDING VALUE::::01010101010101010101010101010101
+# Finished sending in module router_tb.d4. Simulation time =            80000000
+# *** router_tb.d4                   80
+# Start sending in module router_tb.d4. Simulation time =            82000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             82000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             82000000
+### router_tb.intf[6].Receive Stalled(                   4) @             82000000
+# Received Data:  17 ------ 00010001
+# Finished receiving in module router_tb.db1. Simulation time =            82000000
+# Execution cycle=         20, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.100000, Average Throughput=0.243902
+# *** router_tb.db1                   82
+# Start receiving in module router_tb.db1. Simulation time =            82000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             84000000
+### router_tb.r.intf[1].Send Stalled(                   8) @             84000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[0].Send Stalled(                   6) @             84000000
+# SENDING VALUE::::01010001000100010001000100010001
+# Finished sending in module router_tb.d0. Simulation time =            84000000
+# *** router_tb.d0                   84
+# Start sending in module router_tb.d0. Simulation time =            86000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             86000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             86000000
+### router_tb.intf[6].Receive Stalled(                   4) @             86000000
+# Received Data:  85 ------ 01010101
+# Finished receiving in module router_tb.db1. Simulation time =            86000000
+# Execution cycle=         21, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.095238, Average Throughput=0.244186
+# *** router_tb.db1                   86
+# Start receiving in module router_tb.db1. Simulation time =            86000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             88000000
+### router_tb.r.intf[16].Send Stalled(                  24) @             88000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[3].Send Stalled(                  22) @             88000000
+# SENDING VALUE::::01010100010001000100010001000100
+# Finished sending in module router_tb.d3. Simulation time =            88000000
+# *** router_tb.d3                   88
+# Start sending in module router_tb.d3. Simulation time =            90000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             90000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             90000000
+### router_tb.intf[6].Receive Stalled(                   4) @             90000000
+# Received Data:  17 ------ 00010001
+# Finished receiving in module router_tb.db1. Simulation time =            90000000
+# Execution cycle=         22, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.090909, Average Throughput=0.244444
+# *** router_tb.db1                   90
+# Start receiving in module router_tb.db1. Simulation time =            90000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @             92000000
+### router_tb.r.intf[1].Send Stalled(                   8) @             92000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[0].Send Stalled(                   6) @             92000000
+# SENDING VALUE::::01010001000100010001000100010001
+# Finished sending in module router_tb.d0. Simulation time =            92000000
+# *** router_tb.d0                   92
+# Start sending in module router_tb.d0. Simulation time =            94000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             94000000
+### router_tb.r.arb1.intf[2].Send Stalled(                   2) @             94000000
+### router_tb.intf[6].Receive Stalled(                   4) @             94000000
+# Received Data:  68 ------ 01000100
+# Finished receiving in module router_tb.db1. Simulation time =            94000000
+# Execution cycle=         23, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.086957, Average Throughput=0.244681
+# *** router_tb.db1                   94
+# Start receiving in module router_tb.db1. Simulation time =            94000000
+### router_tb.r.arb1.intf[1].Send Stalled(                   2) @             96000000
+### router_tb.r.intf[21].Send Stalled(                  16) @             96000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[4].Send Stalled(                  14) @             96000000
+# SENDING VALUE::::01010101010101010101010101010101
+# Finished sending in module router_tb.d4. Simulation time =            96000000
+# *** router_tb.d4                   96
+# Start sending in module router_tb.d4. Simulation time =            98000000
+### router_tb.r.arb1.intf[4].Receive Stalled(                   4) @             98000000
+### router_tb.r.arb1.intf[0].Send Stalled(                   2) @             98000000
+### router_tb.intf[6].Receive Stalled(                   4) @             98000000
+# Received Data:  17 ------ 00010001
+# Finished receiving in module router_tb.db1. Simulation time =            98000000
+# Execution cycle=         24, Cycle Time=          4, 
+# 
+#     Average CycleTime=4.083333, Average Throughput=0.244898
+# *** router_tb.db1                   98
+# Start receiving in module router_tb.db1. Simulation time =            98000000
+### router_tb.r.arb1.intf[3].Send Stalled(                   2) @            100000000
+### router_tb.r.intf[1].Send Stalled(                   8) @            100000000
+# SENDING PACKET TO EAST!!
+### router_tb.intf[0].Send Stalled(                   6) @            100000000
+# SENDING VALUE::::01010001000100010001000100010001
+# Finished sending in module router_tb.d0. Simulation time =           100000000
+# *** router_tb.d0                  100
