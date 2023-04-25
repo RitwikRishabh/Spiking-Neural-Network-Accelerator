@@ -208,3 +208,10 @@ module memory(interface memRead, memWrite, T, memRow, memCol, data);
             end
     end
   endmodule
+
+  module memoryController(interface toFilter, toIfmap, fromOfmap);
+    Channel #(.hsProtocol(P4PhaseBD), .WIDTH(8)) intf[0:10];
+
+    memory #(.TIMESTEPS(10)) nocMem(.memRead(intf[0]), .memWrite(intf[1]), .T(intf[2]), .memRow(intf[3]), .memCol(intf[4]), .data(intf[5]));
+    memory_interface #(.MEM_LATENCY(5)) nocMemInterface(.toMemRead(intf[0]), .toMemWrite(intf[1]), .toMemT(intf[2]), .toMemX(intf[3]), .toMemY(intf[4]), .fromMemGetData(intf[5]), .toNOCfilter(toFilter), .toNOCifmap(toIfmap), .fromNOC(fromOfmap));
+  endmodule
