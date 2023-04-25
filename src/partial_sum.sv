@@ -30,6 +30,7 @@ module partial_sum (interface in, interface out);
     task storePartialSums;
         begin
             in.Receive(inputPacket);
+            $display("%m Received psum packet %h", inputPacket);
             case(inputPacket[WIDTH-1:WIDTH-4])
                 addrPE1 : begin
                     partialPE1 = inputPacket[12:0];
@@ -45,11 +46,6 @@ module partial_sum (interface in, interface out);
                 end
                 addrPE5 : begin
                     partialPE5 = inputPacket[12:0];
-                end
-                addrWR : begin
-                    if (inputPacket[WIDTH-9:WIDTH-10] == membranePotType) begin
-                        membranePotential = inputPacket[0:+WIDTH_MEMBRANE_POTENTIAL];
-                    end
                 end
             endcase
         end

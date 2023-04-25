@@ -1,8 +1,8 @@
 
 `timescale 1ns/1fs
 import SystemVerilogCSP::*;
-`include "./src/data_bucket.sv"
-`include "./src/data_generator.sv"
+// `include "./src/data_bucket.sv"
+// `include "./src/data_generator.sv"
 
 module arbiter_2_ip_2_op (interface A,B,W,O);
 	parameter FL=2;

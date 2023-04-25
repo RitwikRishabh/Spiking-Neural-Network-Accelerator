@@ -10,7 +10,7 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemX, toMemY,
     parameter IFMAP_WIDTH = 25;
     parameter FILTER_WIDTH = 40;
 
-    localparam addrPE1 = 4'b0000, addrPE2 = 4'b0001, addrPE3 = 4'b0010, addrPE4 = 4'b0011, addrPE5 = 4'b1001;
+    localparam addrPE1 = 4'b0001, addrPE2 = 4'b0101, addrPE3 = 4'b0011, addrPE4 = 4'b0111, addrPE5 = 4'b0011;
     localparam interfaceAddr=4'b0000;
 
     localparam inputType = 2'b00, kernelType = 2'b01, outputType = 2'b11;
@@ -57,15 +57,15 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemX, toMemY,
             end
             #MEM_LATENCY;
             filterValue={byte5, byte4, byte3, byte2, byte1};
-            $display("%m Filter Value is %b", filterValue);
+            $display("%m Filter Value is %h", filterValue);
             case(i)
-                0: nocVal = {interfaceAddr, addrPE1, kernelType, zerosShort, filterValue};
-                1: nocVal = {interfaceAddr, addrPE2, kernelType, zerosShort, filterValue};
-                2: nocVal = {interfaceAddr, addrPE3, kernelType, zerosShort, filterValue};
-                3: nocVal = {interfaceAddr, addrPE4, kernelType, zerosShort, filterValue};
-                4: nocVal = {interfaceAddr, addrPE5, kernelType, zerosShort, filterValue};
+                0: nocVal = {addrPE1, interfaceAddr, kernelType, zerosShort, filterValue};
+                1: nocVal = {addrPE2, interfaceAddr, kernelType, zerosShort, filterValue};
+                2: nocVal = {addrPE3, interfaceAddr, kernelType, zerosShort, filterValue};
+                3: nocVal = {addrPE4, interfaceAddr, kernelType, zerosShort, filterValue};
+                4: nocVal = {addrPE5, interfaceAddr, kernelType, zerosShort, filterValue};
             endcase
-            $display("%m Sending value %b to NOC", nocVal);
+            $display("%m Sending value %h to NOC", nocVal);
             toNOCfilter.Send(nocVal);
         end
     end
@@ -85,23 +85,23 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemX, toMemY,
                 fromMemGetData.Receive(spikeValue);
                 ifMapValue[j]=spikeValue;
             end
-            $display("%m Ifmap value is %d", ifMapValue);
+            $display("%m Ifmap value is %h", ifMapValue);
             #MEM_LATENCY;
             case(i)
-                0: nocVal = {interfaceAddr, addrPE1, inputType, zerosLong, ifMapValue};
-                1: nocVal = {interfaceAddr, addrPE2, inputType, zerosLong, ifMapValue};
-                2: nocVal = {interfaceAddr, addrPE3, inputType, zerosLong, ifMapValue};
-                3: nocVal = {interfaceAddr, addrPE4, inputType, zerosLong, ifMapValue};
-                4: nocVal = {interfaceAddr, addrPE5, inputType, zerosLong, ifMapValue};
+                0: nocVal = {addrPE1, interfaceAddr, inputType, zerosLong, ifMapValue};
+                1: nocVal = {addrPE2, interfaceAddr, inputType, zerosLong, ifMapValue};
+                2: nocVal = {addrPE3, interfaceAddr, inputType, zerosLong, ifMapValue};
+                3: nocVal = {addrPE4, interfaceAddr, inputType, zerosLong, ifMapValue};
+                4: nocVal = {addrPE5, interfaceAddr, inputType, zerosLong, ifMapValue};
             endcase
-            $display("%m Sending value %b to NOC", nocVal);
+            $display("%m Sending value %h to NOC", nocVal);
             toNOCifmap.Send(nocVal);
 
         end
         #MEM_LATENCY;
 
         fromNOC.Receive(nocVal);
-        $display("%m Received value %b from NOC", nocVal);
+        $display("%m Received value %h from NOC", nocVal);
         if (nocVal[WIDTH_NOC-9:WIDTH_NOC-10] == outputType) begin
             fork
                 toMemWrite.Send(writeOfmaps);
@@ -152,7 +152,7 @@ module memory(interface memRead, memWrite, T, memRow, memCol, data);
         $readmemh("kernel_decimal.mem", filterMemPre);
         for (int fx = 0; fx < FILTER_ROWS; fx++) begin
             for (int fy = 0; fy < FILTER_COLS; fy++) begin
-                filterMem[fx][fy] = filterMemPre[FILTER_COLS * fx * fy];
+                filterMem[fx][fy] = filterMemPre[(FILTER_COLS * fx) + fy];
             end
         end
         // Load ifmaps
@@ -240,6 +240,6 @@ module memory(interface memRead, memWrite, T, memRow, memCol, data);
 module memoryController(interface toFilter, toIfmap, fromOfmap);
     Channel #(.hsProtocol(P4PhaseBD), .WIDTH(8)) intf [0:5]();
 
-    memory #(.TIMESTEPS(10)) nocMem(.memRead(intf[0]), .memWrite(intf[1]), .T(intf[2]), .memRow(intf[3]), .memCol(intf[4]), .data(intf[5]));
+    memory #(.TIMESTEPS(2)) nocMem(.memRead(intf[0]), .memWrite(intf[1]), .T(intf[2]), .memRow(intf[3]), .memCol(intf[4]), .data(intf[5]));
     memory_interface #(.MEM_LATENCY(5)) nocMemInterface(.toMemRead(intf[0]), .toMemWrite(intf[1]), .toMemT(intf[2]), .toMemX(intf[3]), .toMemY(intf[4]), .fromMemGetData(intf[5]), .toNOCfilter(toFilter), .toNOCifmap(toIfmap), .fromNOC(fromOfmap));
 endmodule

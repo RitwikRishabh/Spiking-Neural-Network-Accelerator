@@ -5,11 +5,11 @@ import SystemVerilogCSP::*;
 module split_1x5(interface in, out_0, out_1, out_2, out_3, out_4);
 parameter FL = 2;
 parameter BL = 2;
-parameter WIDTH = 32;
+parameter WIDTH = 64;
 parameter X_LOCATION = 2'b00;
 parameter Y_LOCATION = 2'b00;
 
-localparam dest_bits_loc = 31;
+localparam dest_bits_loc = 63;
 
 logic [WIDTH-1:0]packet;
 logic [1:0] x_dest, y_dest;
@@ -22,7 +22,7 @@ always begin
     $display("x_LOCATION :: %b, y_LOCATION :: %b",X_LOCATION, Y_LOCATION);
     if (x_dest == X_LOCATION && y_dest == Y_LOCATION) begin
         out_0.Send(packet);
-        $display("SENDING PACKET TO PE!!");
+        $display("SENDING PACKET TO PE!! %h", packet);
     end
     //start torus cases
     else if(x_dest == X_LOCATION && y_dest == 2'b00 && Y_LOCATION == 2'b11) begin

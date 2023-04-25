@@ -1,8 +1,8 @@
 `timescale 1ns/1fs
 import SystemVerilogCSP :: *;
 
-`include "./src/data_bucket.sv"
-`include "./src/data_generator.sv"
+// `include "./src/data_bucket.sv"
+// `include "./src/data_generator.sv"
 
 module packetizerConv(interface psumOut, interface addrIn, interface convCount, interface ifmapIn, interface packet);
     parameter PACKET_WIDTH = 64;
@@ -236,7 +236,7 @@ module accumulatorConv(interface in, interface out);
     end
 endmodule
 
-module peTB(interface packetIn, interface packetOut);
+module pe(interface packetIn, interface packetOut);
     Channel #(.hsProtocol(P4PhaseBD), .WIDTH(64)) intf [12:0] ();
 
     depacketizerConv #(.ADDR_WIDTH(4), .IFMAP_LENGTH(25), .FILTER_LENGTH(40), .WIDTH(64), .FL(2), .BL(1))
@@ -255,9 +255,9 @@ endmodule
 
 
 ///////////////////////////// TESTBENCH///////////////////////////////////////////
-module pe_tb;
-    Channel #(.hsProtocol(P4PhaseBD), .WIDTH(64)) intf  [1:0] ();
-    data_generator #(.WIDTH(64)) d0 (intf[0]);
-    peTB pe (intf[0], intf[1]);
-    data_bucket #(.WIDTH(64)) db (intf[1]);
-endmodule
+// module pe_tb;
+//     Channel #(.hsProtocol(P4PhaseBD), .WIDTH(64)) intf  [1:0] ();
+//     data_generator #(.WIDTH(64)) d0 (intf[0]);
+//     peTB pe (intf[0], intf[1]);
+//     data_bucket #(.WIDTH(64)) db (intf[1]);
+// endmodule
