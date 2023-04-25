@@ -208,16 +208,37 @@ module memory(interface memRead, memWrite, T, memRow, memCol, data);
             memRow.Receive(row);
             memCol.Receive(col);
             T.Receive(t);
-            join
+        join
             if (writeType == writeOfmaps) begin
                 ofMapMem[t][row][col] = 1'b1;
-            end
+            end  
     end
+    initial begin
+        wait(t==1);
+        fp = $fopen("out1_test.txt");
+        for(i = 0; i < 21; i+=1) begin
+            for(j=0;j<21;j+=1) begin
+                $fdisplay(fp,"OF MAP TIMESTEP 1 LOCATION %d, %d, OUTPUT:: %b",ofMapMem[0][i][j]);
+            end
+        end
+        $fclose(fp);
+        wait(t==2);
+        fp = $fopen("out2_test.txt");
+        for(i = 0; i < 21; i+=1) begin
+            for(j=0;j<21;j+=1) begin
+                $fdisplay(fp,"OF MAP TIMESTEP 2 LOCATION %d, %d, OUTPUT:: %b",ofMapMem[1][i][j]);
+            end
+        end 
+        $fclose(fp);
+    end
+
+
   endmodule
 
-  module memoryController(interface toFilter, toIfmap, fromOfmap);
+
+module memoryController(interface toFilter, toIfmap, fromOfmap);
     Channel #(.hsProtocol(P4PhaseBD), .WIDTH(8)) intf[0:10];
 
     memory #(.TIMESTEPS(10)) nocMem(.memRead(intf[0]), .memWrite(intf[1]), .T(intf[2]), .memRow(intf[3]), .memCol(intf[4]), .data(intf[5]));
     memory_interface #(.MEM_LATENCY(5)) nocMemInterface(.toMemRead(intf[0]), .toMemWrite(intf[1]), .toMemT(intf[2]), .toMemX(intf[3]), .toMemY(intf[4]), .fromMemGetData(intf[5]), .toNOCfilter(toFilter), .toNOCifmap(toIfmap), .fromNOC(fromOfmap));
-  endmodule
+endmodule
