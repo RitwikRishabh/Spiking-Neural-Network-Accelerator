@@ -57,6 +57,7 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemX, toMemY,
             end
             #MEM_LATENCY;
             filterValue={byte5, byte4, byte3, byte2, byte1};
+            $display("%m Filter Value is %b", filterValue);
             case(i)
                 0: nocVal = {interfaceAddr, addrPE1, kernelType, zerosShort, filterValue};
                 1: nocVal = {interfaceAddr, addrPE2, kernelType, zerosShort, filterValue};
@@ -64,6 +65,7 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemX, toMemY,
                 3: nocVal = {interfaceAddr, addrPE4, kernelType, zerosShort, filterValue};
                 4: nocVal = {interfaceAddr, addrPE5, kernelType, zerosShort, filterValue};
             endcase
+            $display("%m Sending value %b to NOC", nocVal);
             toNOCfilter.Send(nocVal);
         end
     end
@@ -83,6 +85,7 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemX, toMemY,
                 fromMemGetData.Receive(spikeValue);
                 ifMapValue[j]=spikeValue;
             end
+            $display("%m Ifmap value is %d", ifMapValue);
             #MEM_LATENCY;
             case(i)
                 0: nocVal = {interfaceAddr, addrPE1, inputType, zerosLong, ifMapValue};
@@ -91,11 +94,14 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemX, toMemY,
                 3: nocVal = {interfaceAddr, addrPE4, inputType, zerosLong, ifMapValue};
                 4: nocVal = {interfaceAddr, addrPE5, inputType, zerosLong, ifMapValue};
             endcase
+            $display("%m Sending value %b to NOC", nocVal);
             toNOCifmap.Send(nocVal);
+
         end
         #MEM_LATENCY;
 
         fromNOC.Receive(nocVal);
+        $display("%m Received value %b from NOC", nocVal);
         if (nocVal[WIDTH_NOC-9:WIDTH_NOC-10] == outputType) begin
             fork
                 toMemWrite.Send(writeOfmaps);
