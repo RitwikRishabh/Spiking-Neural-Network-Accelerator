@@ -31,7 +31,7 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, t
 
     logic [WIDTH-1:0] byteVal = 0;
     logic [WIDTH-1:0] byte1, byte2, byte3, byte4, byte5;
-    logic [WIDTH_NOC-1:0] nocVal;
+    logic [WIDTH_NOC-1:0] IFnocVal=0, FilterNocVal=0, OpNocVal=0 ;
     logic [IFMAP_WIDTH-1:0] ifMapValue;
     logic [FILTER_WIDTH-1:0] filterValue;
     logic spikeValue = 0;;
@@ -59,14 +59,14 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, t
             filterValue={byte5, byte4, byte3, byte2, byte1};
             // $display("%m Filter Value is %b", filterValue);
             case(i)
-                0: nocVal = {addrPE1, interfaceAddr, kernelType, zerosShort, filterValue};
-                1: nocVal = {addrPE2, interfaceAddr, kernelType, zerosShort, filterValue};
-                2: nocVal = {addrPE3, interfaceAddr, kernelType, zerosShort, filterValue};
-                3: nocVal = {addrPE4, interfaceAddr, kernelType, zerosShort, filterValue};
-                4: nocVal = {addrPE5, interfaceAddr, kernelType, zerosShort, filterValue};
+                0: FilterNocVal = {addrPE1, interfaceAddr, kernelType, zerosShort, filterValue};
+                1: FilterNocVal = {addrPE2, interfaceAddr, kernelType, zerosShort, filterValue};
+                2: FilterNocVal = {addrPE3, interfaceAddr, kernelType, zerosShort, filterValue};
+                3: FilterNocVal = {addrPE4, interfaceAddr, kernelType, zerosShort, filterValue};
+                4: FilterNocVal = {addrPE5, interfaceAddr, kernelType, zerosShort, filterValue};
             endcase
             // $display("%m Sending value %b to NOC", nocVal);
-            toNOCfilter.Send(nocVal);
+            toNOCfilter.Send(FilterNocVal);
         end
     end
 
@@ -88,36 +88,36 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, t
             // $display("%m Ifmap value is %d", ifMapValue);
             //#MEM_LATENCY;
             case(i)
-                0: nocVal = {addrPE1, interfaceAddr, inputType, zerosLong, ifMapValue};
-                1: nocVal = {addrPE2, interfaceAddr, inputType, zerosLong, ifMapValue};
-                2: nocVal = {addrPE3, interfaceAddr, inputType, zerosLong, ifMapValue};
-                3: nocVal = {addrPE4, interfaceAddr, inputType, zerosLong, ifMapValue};
-                4: nocVal = {addrPE5, interfaceAddr, inputType, zerosLong, ifMapValue};
+                0: IFnocVal = {addrPE1, interfaceAddr, inputType, zerosLong, ifMapValue};
+                1: IFnocVal = {addrPE2, interfaceAddr, inputType, zerosLong, ifMapValue};
+                2: IFnocVal = {addrPE3, interfaceAddr, inputType, zerosLong, ifMapValue};
+                3: IFnocVal = {addrPE4, interfaceAddr, inputType, zerosLong, ifMapValue};
+                4: IFnocVal = {addrPE5, interfaceAddr, inputType, zerosLong, ifMapValue};
             endcase
             // $display("%m Sending value %b to NOC", nocVal);
-            toNOCifmap.Send(nocVal);
+            toNOCifmap.Send(IFnocVal);
 
         end
         #MEM_LATENCY;
     end
     always begin
-        fromNOC.Receive(nocVal);
+        fromNOC.Receive(OpNocVal);
         #MEM_LATENCY;
         // $display("%m Received value %b from NOC", nocVal);
         // $display("NOCALVAL:::::%b",nocVal);
-        if (nocVal[WIDTH_NOC-9:WIDTH_NOC-10] == outputType) begin
+        if (OpNocVal[WIDTH_NOC-9:WIDTH_NOC-10] == outputType) begin
             //$display("%m RECEIVED PACKET AT MEM:: %h",nocVal);
             
             // toMemWrite.Send(writeOfmaps);
-            sendPacket.Send(nocVal);
-            toMemXofmap.Send(nocVal[9:5]);
+            sendPacket.Send(OpNocVal);
+            toMemXofmap.Send(OpNocVal[9:5]);
             // $display("Sending nocalval");
-            toMemYofmap.Send(nocVal[4:0]);
+            toMemYofmap.Send(OpNocVal[4:0]);
             toMemT.Send(t);
             // $display("MEM TO X ROW::::%b",nocVal[9:5]);
             // $display("MEM TO Y COLUMN::::%b",nocVal[4:0]);
         end
-        if (nocVal[WIDTH_NOC-9:WIDTH_NOC-10] == outputType && nocVal[0+:10] == DONE) begin
+        if (OpNocVal[WIDTH_NOC-9:WIDTH_NOC-10] == outputType && OpNocVal[0+:10] == DONE) begin
             timestepCounter += 1;
         end
         if (timestepCounter == 7) begin
