@@ -48,15 +48,15 @@ module packetizerConv(interface psumOut, interface addrIn, interface convCount, 
     always begin
         ifmapIn.Receive(ifmapValue);
         #FL;
-        case (addrValue)
-            addrPE2 : packetValue2 = {addrPE1, PE_ADDRESS, 2'b00, 29'b0, ifmapValue};
-            addrPE3 : packetValue2 = {addrPE2, PE_ADDRESS, 2'b00, 29'b0, ifmapValue};
-            addrPE4 : packetValue2 = {addrPE3, PE_ADDRESS, 2'b00, 29'b0, ifmapValue};
-            addrPE5 : packetValue2 = {addrPE4, PE_ADDRESS, 2'b00, 29'b0, ifmapValue};
+        case (PE_ADDRESS)
+            addrPE2 : begin packetValue2 = {addrPE1, PE_ADDRESS, 2'b00, 29'b0, ifmapValue}; packet.Send(packetValue2); end
+            addrPE3 : begin packetValue2 = {addrPE2, PE_ADDRESS, 2'b00, 29'b0, ifmapValue}; packet.Send(packetValue2); end
+            addrPE4 : begin packetValue2 = {addrPE3, PE_ADDRESS, 2'b00, 29'b0, ifmapValue}; packet.Send(packetValue2); end
+            addrPE5 : begin packetValue2 = {addrPE4, PE_ADDRESS, 2'b00, 29'b0, ifmapValue}; packet.Send(packetValue2); end
         endcase
-        wait(packet.status == idle);
-        packet.Send(packetValue2);
-        //$display("\nSent the packet2:: %h\n",packetValue2);
+        //wait(packet.status == idle);
+        $display("DESTINATION_ADDRESS::%b, SOURCE_ADDRESS::%b",packetValue2[63:60],PE_ADDRESS);
+        $display("\n%m Sent the packet2:: %h\n",packetValue2);
         #BL;
     end
 endmodule
@@ -80,6 +80,7 @@ module depacketizerConv(interface packet, interface filterOut, interface ifmapOu
         #FL;
         if (packetValue[WIDTH-9:WIDTH-10] == 00) begin
             ifmapValue = packetValue[0+:IFMAP_LENGTH];
+            $display("%m RECEIVED IFMAPVALUE::: %b", ifmapValue);
             ifmapOut.Send(ifmapValue);
         end
         else if (packetValue[WIDTH-9:WIDTH-10] == 01) begin
@@ -120,6 +121,7 @@ module ifmapMemConv(interface ifmapIn, interface ifmapOut, interface toPacketize
         end
         oldIfmapRow = ifmapRow;
         toPacketizer.Send(oldIfmapRow);
+        $display("SENT THE OLD IFMAPROW::::%h", oldIfmapRow);
         if (convolutionCounter == CONVOLUTION_ROW) begin
             convolutionCounter = 0;
         end
