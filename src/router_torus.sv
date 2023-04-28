@@ -9,54 +9,54 @@ parameter WIDTH = 64;
 parameter X_LOCATION = 2'b00;
 parameter Y_LOCATION = 2'b00;
 
-localparam dest_bits_loc = 63;
+localparam dest_bits_loc = WIDTH-1;
 
 logic [WIDTH-1:0]packet;
 logic [1:0] x_dest, y_dest;
 
 always begin
     in.Receive(packet);
-    $display("Received Packet at %m, Packet value : %h", packet);
+    // $display("Received Packet at %m, Packet value : %h", packet);
     {x_dest,y_dest} = packet[dest_bits_loc-:4];
-    $display("x_dest :: %b, y_dest :: %b",x_dest, y_dest);
-    $display("x_LOCATION :: %b, y_LOCATION :: %b",X_LOCATION, Y_LOCATION);
+    // $display("x_dest :: %b, y_dest :: %b",x_dest, y_dest);
+    // $display("x_LOCATION :: %b, y_LOCATION :: %b",X_LOCATION, Y_LOCATION);
     if (x_dest == X_LOCATION && y_dest == Y_LOCATION) begin
         out_0.Send(packet);
-        $display("SENDING PACKET TO PE!! %h", packet);
+        // $display("SENDING PACKET TO PE!!:::%h",packet);
     end
     //start torus cases
     else if(x_dest == X_LOCATION && y_dest == 2'b00 && Y_LOCATION == 2'b11) begin
         out_3.Send(packet); // send it to North
-        $display("SENDING PACKET TO NORTH!!");
+        // $display("SENDING PACKET TO NORTH!!");
     end
     else if(x_dest == X_LOCATION && y_dest == 2'b11 && Y_LOCATION == 2'b00) begin
         out_4.Send(packet); // send it to South
-        $display("SENDING PACKET TO SOUTH!!");
+        // $display("SENDING PACKET TO SOUTH!!");
     end
     else if(y_dest == Y_LOCATION && x_dest == 2'b00 && X_LOCATION == 2'b11) begin
         out_1.Send(packet); // send it to East
-        $display("SENDING PACKET TO EAST!!");
+        // $display("SENDING PACKET TO EAST!!");
     end
     else if(y_dest == Y_LOCATION && x_dest == 2'b11 && X_LOCATION == 2'b00) begin
         out_2.Send(packet); // send it to West
-        $display("SENDING PACKET TO West!!");
+        // $display("SENDING PACKET TO West!!");
     end
     //end torus cases
     else if(x_dest > X_LOCATION) begin
         out_1.Send(packet); // send it to East
-        $display("SENDING PACKET TO EAST!!");
+        // $display("SENDING PACKET TO EAST!!");
     end
     else if(x_dest < X_LOCATION) begin
         out_2.Send(packet); // send it to West
-        $display("SENDING PACKET TO WEST!!");
+        // $display("SENDING PACKET TO WEST!!");
     end
     else if(y_dest > Y_LOCATION) begin
         out_3.Send(packet); // send it to North
-        $display("SENDING PACKET TO NORTH!!");
+        // $display("SENDING PACKET TO NORTH!!");
     end
     else if(y_dest < Y_LOCATION) begin
         out_4.Send(packet); // send it to South
-        $display("SENDING PACKET TO SOUTH!!");
+        // $display("SENDING PACKET TO SOUTH!!");
     end
 end
 endmodule
@@ -64,7 +64,7 @@ endmodule
 module split_5x20(interface in_intf4, in_intf3, in_intf2, in_intf1, in_intf0, interface out_intf[24:0] );
 parameter FL = 2;
 parameter BL = 2;
-parameter WIDTH = 32;
+parameter WIDTH = 64;
 parameter X_LOCATION = 2'b00;
 parameter Y_LOCATION = 2'b00;
 
@@ -106,11 +106,11 @@ module router (interface in_PE, in_East, in_West, in_North, in_South,
                interface out_PE, out_East, out_West, out_North, out_South);
 parameter FL = 2;
 parameter BL = 2;
-parameter WIDTH = 32;
+parameter WIDTH = 64;
 parameter X_LOCATION = 2'b00;
 parameter Y_LOCATION = 2'b00;
 
-localparam dest_bits_loc = 31;
+localparam dest_bits_loc = 63;
 
 Channel #(.hsProtocol(P4PhaseBD), .WIDTH(WIDTH)) intf  [24:0] ();
 
@@ -149,8 +149,7 @@ arbiter_4_ip_1_op #(.FL(FL), .BL(BL), .WIDTH(WIDTH)) arb4 (.in_0(intf[4]),
 endmodule
 
 
-module router_4x4_torus(interface in_PE[0:15],
-                  interface out_PE[0:15]);
+module router_4x4_torus(interface in_PE[0:15],interface out_PE[0:15]);
 parameter FL = 2;
 parameter BL = 2;
 parameter WIDTH = 32;
@@ -318,7 +317,7 @@ router #(.FL(FL), .BL(BL), .WIDTH(WIDTH), .X_LOCATION(2'b11), .Y_LOCATION(2'b00)
                                                                                       .out_East(torus[8]),
                                                                                       .out_West(intf[46]),
                                                                                       .out_North(intf[40]),
-                                                                                      .out_South(torus[9]));
+                                                                                      .out_South(torus[14]));
 
 endmodule
 
@@ -327,141 +326,141 @@ endmodule
 ////////////////////////////////////////////////////testbench////////////////////////////////////////////
 
 //Sample data_generator module
-module data_generator (interface r);
-  parameter FL = 0;
-  parameter SENDVALUE = 32'h1111_1111;
-  parameter WIDTH = 32;
-  //logic [WIDTH-1:0] SendValue=0;
-  initial
-  begin 
+// module data_generator (interface r);
+//   parameter FL = 0;
+//   parameter SENDVALUE = 32'h1111_1111;
+//   parameter WIDTH = 32;
+//   //logic [WIDTH-1:0] SendValue=0;
+//   initial
+//   begin 
     
-	//add a display here to see when this module starts its main loop
-    //$display("*** %m %d",$time);
+// 	//add a display here to see when this module starts its main loop
+//     //$display("*** %m %d",$time);
 	
-    //SendValue = $random() % (2**WIDTH); // the range of random number is from 0 to 2^WIDTH
-    #FL;   // change FL and check the change of performance
+//     //SendValue = $random() % (2**WIDTH); // the range of random number is from 0 to 2^WIDTH
+//     #FL;   // change FL and check the change of performance
      
-    //Communication action Send is about to start
-    //$display("Start sending in module %m. Simulation time =%t", $time);
-    r.Send(SENDVALUE);
-    //$display("SENDING VALUE::::%b", SENDVALUE);
+//     //Communication action Send is about to start
+//     //$display("Start sending in module %m. Simulation time =%t", $time);
+//     r.Send(SENDVALUE);
+//     //$display("SENDING VALUE::::%b", SENDVALUE);
 	
-    //Communication action Send is finished
-    //$display("Finished sending in module %m. Simulation time =%t", $time);
+//     //Communication action Send is finished
+//     //$display("Finished sending in module %m. Simulation time =%t", $time);
 	
 
-  end
-endmodule
+//   end
+// endmodule
 
-//Sample data_bucket module
-module data_bucket (interface r);
-  parameter WIDTH = 32;
-  parameter BL = 0; //ideal environment    backward delay
-  logic [WIDTH-1:0] ReceiveValue = 0;
+// //Sample data_bucket module
+// module data_bucket (interface r);
+//   parameter WIDTH = 32;
+//   parameter BL = 0; //ideal environment    backward delay
+//   logic [WIDTH-1:0] ReceiveValue = 0;
   
-  //Variables added for performance measurements
-  real cycleCounter=0, //# of cycles = Total number of times a value is received
-       timeOfReceive=0, //Simulation time of the latest Receive 
-       cycleTime=0; // time difference between the last two receives
-  real averageThroughput=0, averageCycleTime=0, sumOfCycleTimes=0;
-  always
-  begin
+//   //Variables added for performance measurements
+//   real cycleCounter=0, //# of cycles = Total number of times a value is received
+//        timeOfReceive=0, //Simulation time of the latest Receive 
+//        cycleTime=0; // time difference between the last two receives
+//   real averageThroughput=0, averageCycleTime=0, sumOfCycleTimes=0;
+//   always
+//   begin
 	
-	//add a display here to see when this module starts its main loop
-  //$display("*** %m %d",$time);
+// 	//add a display here to see when this module starts its main loop
+//   //$display("*** %m %d",$time);
 
-    timeOfReceive = $time;
+//     timeOfReceive = $time;
 	
-	//Communication action Receive is about to start
-	//$display("Start receiving in module %m. Simulation time =%t", $time);
-    r.Receive(ReceiveValue);
+// 	//Communication action Receive is about to start
+// 	//$display("Start receiving in module %m. Simulation time =%t", $time);
+//     r.Receive(ReceiveValue);
 
-    //$display("Received Data: %d ------ %b", ReceiveValue, ReceiveValue);
-    $display("\nPacket Received at DATA BUCKET %m and Packet value: %h\n", ReceiveValue);
+//     //$display("Received Data: %d ------ %b", ReceiveValue, ReceiveValue);
+//     $display("\nPacket Received at DATA BUCKET %m and Packet value: %h\n", ReceiveValue);
 	
-	//Communication action Receive is finished
-  //$display("Finished receiving in module %m. Simulation time =%t", $time);
+// 	//Communication action Receive is finished
+//   //$display("Finished receiving in module %m. Simulation time =%t", $time);
 
-	#BL;
-    cycleCounter += 1;		
-    //Measuring throughput: calculate the number of Receives per unit of time  
-    //CycleTime stores the time it takes from the begining to the end of the always block
-    cycleTime = $time - timeOfReceive; // the difference of time between now and the last receive
-    averageThroughput = cycleCounter/$time; 
-    sumOfCycleTimes += cycleTime;
-    averageCycleTime = sumOfCycleTimes / cycleCounter;
-    //$display("Execution cycle= %d, Cycle Time= %d, 
-    //Average CycleTime=%f, Average Throughput=%f", cycleCounter, cycleTime, 
-    //averageCycleTime, averageThroughput);
+// 	#BL;
+//     cycleCounter += 1;		
+//     //Measuring throughput: calculate the number of Receives per unit of time  
+//     //CycleTime stores the time it takes from the begining to the end of the always block
+//     cycleTime = $time - timeOfReceive; // the difference of time between now and the last receive
+//     averageThroughput = cycleCounter/$time; 
+//     sumOfCycleTimes += cycleTime;
+//     averageCycleTime = sumOfCycleTimes / cycleCounter;
+//     //$display("Execution cycle= %d, Cycle Time= %d, 
+//     //Average CycleTime=%f, Average Throughput=%f", cycleCounter, cycleTime, 
+//     //averageCycleTime, averageThroughput);
 	
 	
-  end
+//   end
 
-endmodule
+// endmodule
 
-module router_tb;
+// module router_tb;
 
-Channel #(.hsProtocol(P4PhaseBD), .WIDTH(32)) intf  [9:0] ();
+// Channel #(.hsProtocol(P4PhaseBD), .WIDTH(32)) intf  [9:0] ();
 
-data_generator #(.WIDTH(32), .SENDVALUE(32'h5111_1111)) d0 (intf[0]);
-data_generator #(.WIDTH(32), .SENDVALUE(32'h5222_2222)) d1 (intf[1]);
-data_generator #(.WIDTH(32), .SENDVALUE(32'h5333_3333)) d2 (intf[2]);
-data_generator #(.WIDTH(32), .SENDVALUE(32'h5444_4444)) d3 (intf[3]);
-data_generator #(.WIDTH(32), .SENDVALUE(32'h5555_5555)) d4 (intf[4]);
+// data_generator #(.WIDTH(32), .SENDVALUE(32'h5111_1111)) d0 (intf[0]);
+// data_generator #(.WIDTH(32), .SENDVALUE(32'h5222_2222)) d1 (intf[1]);
+// data_generator #(.WIDTH(32), .SENDVALUE(32'h5333_3333)) d2 (intf[2]);
+// data_generator #(.WIDTH(32), .SENDVALUE(32'h5444_4444)) d3 (intf[3]);
+// data_generator #(.WIDTH(32), .SENDVALUE(32'h5555_5555)) d4 (intf[4]);
 
-router r (intf[0], intf[1], intf[2], intf[3], intf[4], intf[5], intf[6], intf[7], intf[8], intf[9]);
+// router r (intf[0], intf[1], intf[2], intf[3], intf[4], intf[5], intf[6], intf[7], intf[8], intf[9]);
 
-data_bucket db0 (intf[5]);
-data_bucket db1 (intf[6]);
-data_bucket db2 (intf[7]);
-data_bucket db3 (intf[8]);
-data_bucket db4 (intf[9]);
+// data_bucket db0 (intf[5]);
+// data_bucket db1 (intf[6]);
+// data_bucket db2 (intf[7]);
+// data_bucket db3 (intf[8]);
+// data_bucket db4 (intf[9]);
 
-endmodule
+// endmodule
 
-module router_4x4_torus_tb;
-parameter FL = 2;
-parameter BL = 2;
-parameter WIDTH = 32;
-Channel #(.hsProtocol(P4PhaseBD), .WIDTH(WIDTH)) intf  [0:31] ();
+// module router_4x4_torus_tb;
+// parameter FL = 2;
+// parameter BL = 2;
+// parameter WIDTH = 32;
+// Channel #(.hsProtocol(P4PhaseBD), .WIDTH(WIDTH)) intf  [0:31] ();
 
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hF000_0000)) d0 (intf[0]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h4111_1111)) d1 (intf[1]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h8222_2222)) d2 (intf[2]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h3333_3333)) d3 (intf[3]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hE444_4444)) d4 (intf[4]);
-//data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hF555_5555)) d5 (intf[5]);
-//data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hF666_6666)) d6 (intf[6]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h2777_7777)) d7 (intf[7]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hD888_8888)) d8 (intf[8]);
-//data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hF999_9999)) d9 (intf[9]);
-//data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hFAAA_AAAA)) d10 (intf[10]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h1BBB_BBBB)) d11 (intf[11]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hCCCC_CCCC)) d12 (intf[12]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h7DDD_DDDD)) d13 (intf[13]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hBEEE_EEEE)) d14 (intf[14]);
-data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h0FFF_FFFF)) d15 (intf[15]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hF000_0000)) d0 (intf[0]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h4111_1111)) d1 (intf[1]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h8222_2222)) d2 (intf[2]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h3333_3333)) d3 (intf[3]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hE444_4444)) d4 (intf[4]);
+// //data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hF555_5555)) d5 (intf[5]);
+// //data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hF666_6666)) d6 (intf[6]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h2777_7777)) d7 (intf[7]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hD888_8888)) d8 (intf[8]);
+// //data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hF999_9999)) d9 (intf[9]);
+// //data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hFAAA_AAAA)) d10 (intf[10]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h1BBB_BBBB)) d11 (intf[11]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hCCCC_CCCC)) d12 (intf[12]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h7DDD_DDDD)) d13 (intf[13]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'hBEEE_EEEE)) d14 (intf[14]);
+// data_generator #(.WIDTH(WIDTH), .SENDVALUE(32'h0FFF_FFFF)) d15 (intf[15]);
 
-router_4x4_torus #(.FL(FL), .BL(BL), .WIDTH(WIDTH)) r0 (intf[0:15], intf[16:31]);
+// router_4x4_torus #(.FL(FL), .BL(BL), .WIDTH(WIDTH)) r0 (intf[0:15], intf[16:31]);
 
-data_bucket db0 (intf[16]);
-data_bucket db1 (intf[17]);
-data_bucket db2 (intf[18]);
-data_bucket db3 (intf[19]);
-data_bucket db4 (intf[20]);
-data_bucket db5 (intf[21]);
-data_bucket db6 (intf[22]);
-data_bucket db7 (intf[23]);
-data_bucket db8 (intf[24]);
-data_bucket db9 (intf[25]);
-data_bucket db10 (intf[26]);
-data_bucket db11 (intf[27]);
-data_bucket db12 (intf[28]);
-data_bucket db13 (intf[29]);
-data_bucket db14 (intf[30]);
-data_bucket db15 (intf[31]);
+// data_bucket db0 (intf[16]);
+// data_bucket db1 (intf[17]);
+// data_bucket db2 (intf[18]);
+// data_bucket db3 (intf[19]);
+// data_bucket db4 (intf[20]);
+// data_bucket db5 (intf[21]);
+// data_bucket db6 (intf[22]);
+// data_bucket db7 (intf[23]);
+// data_bucket db8 (intf[24]);
+// data_bucket db9 (intf[25]);
+// data_bucket db10 (intf[26]);
+// data_bucket db11 (intf[27]);
+// data_bucket db12 (intf[28]);
+// data_bucket db13 (intf[29]);
+// data_bucket db14 (intf[30]);
+// data_bucket db15 (intf[31]);
 
-endmodule
+// endmodule
 
 
                                                                                                 

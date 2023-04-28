@@ -49,38 +49,45 @@ module snn;
 //Channel #(.hsProtocol(P4PhaseBD), .WIDTH(64)) intff [0:3] ();
 Channel #(.hsProtocol(P4PhaseBD), .WIDTH(64)) intf [0:31] ();
 
-pe pe1 (.packetIn(intf[24]),
+pe #(.PE_ADDRESS(4'b0001)) pe1 (.packetIn(intf[24]),
         .packetOut(intf[8]));
-pe pe2 (.packetIn(intf[25]),
+pe #(.PE_ADDRESS(4'b0101)) pe2 (.packetIn(intf[25]),
         .packetOut(intf[9]));
-pe pe3 (.packetIn(intf[16]),
+pe #(.PE_ADDRESS(4'b0011)) pe3 (.packetIn(intf[16]),
         .packetOut(intf[0]));
-pe pe4 (.packetIn(intf[17]),
+pe #(.PE_ADDRESS(4'b0111)) pe4 (.packetIn(intf[17]),
         .packetOut(intf[1]));
-pe pe5 (.packetIn(intf[31]),
+pe #(.PE_ADDRESS(4'b1100)) pe5 (.packetIn(intf[31]),
         .packetOut(intf[15]));
 
-partial_sum ps1 (.in(intf[20]),
-                 .out(intf[4]));
-partial_sum ps2 (.in(intf[21]),
-                 .out(intf[5]));
-partial_sum ps3 (.in(intf[18]),
-                 .out(intf[2]));
-partial_sum ps4 (.in(intf[19]),
-                 .out(intf[3]));
-partial_sum ps5 (.in(intf[23]),
-                 .out(intf[7]));
-partial_sum ps6 (.in(intf[26]),
-                 .out(intf[10]));
-partial_sum ps7 (.in(intf[27]),
-                 .out(intf[11]));
+partial_sum #(.ADDER_NUM(5'd0),
+              .SOURCE_ADDRESS(4'b0010)) ps1 (.in(intf[20]),
+                                     .out(intf[4]));
+partial_sum #(.ADDER_NUM(5'd1),
+              .SOURCE_ADDRESS(4'b0110)) ps2 (.in(intf[21]),
+                                     .out(intf[5]));
+partial_sum #(.ADDER_NUM(5'd2),
+              .SOURCE_ADDRESS(4'b1011)) ps3 (.in(intf[18]),
+                                     .out(intf[2]));
+partial_sum #(.ADDER_NUM(5'd3),
+              .SOURCE_ADDRESS(4'b1111)) ps4 (.in(intf[19]),
+                                     .out(intf[3]));
+partial_sum #(.ADDER_NUM(5'd4),
+              .SOURCE_ADDRESS(4'b1110)) ps5 (.in(intf[23]),
+                                     .out(intf[7]));
+partial_sum #(.ADDER_NUM(5'd5),
+              .SOURCE_ADDRESS(4'b1001)) ps6 (.in(intf[26]),
+                                     .out(intf[10]));
+partial_sum#(.ADDER_NUM(5'd6),
+             .SOURCE_ADDRESS(4'b1101))  ps7 (.in(intf[27]),
+                                     .out(intf[11]));
 
 router_4x4_torus #(.FL(2), .BL(1), .WIDTH(64)) r0 (intf[0:15], intf[16:31]);
 memoryController mc (intf[13], intf[12], intf[22]);
 // noc n0 (intff[1], intff[0], intff[2]);
 
 initial begin
-    #100000 $stop; 
+    #1000000 $stop; 
 end
 endmodule
 
