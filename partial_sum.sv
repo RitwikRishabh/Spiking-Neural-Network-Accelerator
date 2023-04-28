@@ -21,7 +21,7 @@ module partial_sum (interface in, interface out);
     localparam outSpikeType = 2'b11;
 
     logic [WIDTH-1:0] inputPacket = 0;
-    reg [WIDTH_MEMBRANE_POTENTIAL-1:0] partialPE1[3:0], partialPE2[3:0], partialPE3[3:0], partialPE4[3:0], partialPE5[3:0];
+    reg [WIDTH_MEMBRANE_POTENTIAL-1:0] partialPE1[5:0], partialPE2[5:0], partialPE3[5:0], partialPE4[5:0], partialPE5[5:0];
     logic outputSpike;
     logic [WIDTH-1:0] outputPacket;
     logic [9:0] outputSpikeAddr;
@@ -41,31 +41,31 @@ module partial_sum (interface in, interface out);
             //$display("Received the packet in the PS%d::::%h",ADDER_NUM, inputPacket );
             case(inputPacket[WIDTH-5:WIDTH-8])
                 addrPE1 : begin
-                    partialPE1[count1] = inputPacket[12:0];
+                    partialPE1[count1%6] = inputPacket[12:0];
                     count1+=1;
                     //counts = counts + 1;
                     // $display("PARTIALPE1:::%d:::%h",partialPE1, inputPacket);
                 end
                 addrPE2 : begin
-                    partialPE2[count2] = inputPacket[12:0];
+                    partialPE2[count2%6] = inputPacket[12:0];
                     count2+=1;
                     //counts = counts + 1;
                     // $display("PARTIALPE2:::%d::::%h",partialPE2, inputPacket);
                 end
                 addrPE3 : begin
-                    partialPE3[count3] = inputPacket[12:0];
+                    partialPE3[count3%6] = inputPacket[12:0];
                     //counts = counts + 1;
                     count3+=1;
                     // $display("PARTIALPE3:::%d::::%h",partialPE3, inputPacket);
                 end
                 addrPE4 : begin
-                    partialPE4[count4] = inputPacket[12:0];
+                    partialPE4[count4%6] = inputPacket[12:0];
                     count4+=1;
                     //counts = counts + 1;
                     // $display("PARTIALPE4:::%d::::%h",partialPE4, inputPacket);
                 end
                 addrPE5 : begin
-                    partialPE5[count5] = inputPacket[12:0];
+                    partialPE5[count5%6] = inputPacket[12:0];
                     count5+=1;
                     //counts = counts + 1;
                     // $display("PARTIALPE5:::%d::::%h",partialPE5, inputPacket);
@@ -102,7 +102,7 @@ module partial_sum (interface in, interface out);
         // //$display("RECEIVED ALL PES!!!!");   
         //$display("%m COUNTSSS:::: %d %d %d %d %d", count1, count2, count3, count4, count5);
 
-        if(!(count1 == 3 && count2 == 3 && count3 == 3 && count4 == 3 && count5 == 3) && !(count1 > 3 ||count2 > 3 ||count3 > 3 || count4 > 3 || count5 > 3))begin
+        if( !(count1 > counts+6 ||count2 > counts+6 ||count3 > counts+6 || count4 > counts+6 || count5 > counts+6))begin
            storePartialSums();
            $display("Total No of packets received in %m is %d",count1+count2+count3+count4+count5);
            $display("Count Split in %m :: PE1:%d PE2:%d PE3:%d PE4:%d PE5:%d", count1, count2, count3, count4, count5);
@@ -112,24 +112,16 @@ module partial_sum (interface in, interface out);
 
 
 
-        if(count1 == 3 && count2 == 3 && count3 == 3 && count4 == 3 && count5 == 3) begin
+        if(count1 > counts && count2 > counts && count3 > counts && count4 > counts && count5 > counts) begin
             if (getMembranePotential) begin
             //storePartialSums(); // Membrane
-            residue_mem[j][i] += partialPE1[counts] + partialPE2[counts] + partialPE3[counts] + partialPE4[counts] + partialPE5[counts];
+            residue_mem[j][i] += partialPE1[counts%6] + partialPE2[counts%6] + partialPE3[counts%6] + partialPE4[counts%6] + partialPE5[counts%6];
             end
             else begin //Calculate first membrane potential
-                residue_mem[j][i] = partialPE1[counts] + partialPE2[counts] + partialPE3[counts] + partialPE4[counts] + partialPE5[counts];
+                residue_mem[j][i] = partialPE1[counts%6] + partialPE2[counts%6] + partialPE3[counts%6] + partialPE4[counts%6] + partialPE5[counts%6];
                 $display("%m DISPLAY RESIDUE MEM:::::%d %d %d %d %d %d %h", residue_mem[j][i], partialPE1[counts],partialPE2[counts],partialPE3[counts],partialPE4[counts],partialPE5[counts], inputPacket[counts]);
             end
             counts+=1;
-            if(counts >= 3) begin
-                counts = 0;
-                count1 = 0;
-                count2 = 0;
-                count3 = 0;
-                count4 = 0;
-                count5 = 0;
-            end
 
             if (residue_mem[j][i] > THRESHOLD) begin
                 outputSpike = 1;
@@ -278,4 +270,3 @@ partial_sum #(.ADDER_NUM(5'd0)) ps (intf[0], intf[1]);
 data_bucket db (intf[1]);
 
 endmodule
-

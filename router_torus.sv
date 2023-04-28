@@ -187,7 +187,7 @@ router #(.FL(FL), .BL(BL), .WIDTH(WIDTH), .X_LOCATION(2'b10), .Y_LOCATION(2'b11)
                                                                                       .out_East(intf[10]),
                                                                                       .out_West(intf[4]),
                                                                                       .out_North(torus[13]),
-                                                                                      .out_South(intf[13]));
+                                                                                      .out_South(intf[11]));
 router #(.FL(FL), .BL(BL), .WIDTH(WIDTH), .X_LOCATION(2'b11), .Y_LOCATION(2'b11)) r3 (.in_PE(in_PE[3]),
                                                                                       .in_East(torus[3]),
                                                                                       .in_West(intf[10]),

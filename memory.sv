@@ -93,6 +93,8 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, t
                 2: IFnocVal = {addrPE3, interfaceAddr, inputType, zerosLong, ifMapValue};
                 3: IFnocVal = {addrPE4, interfaceAddr, inputType, zerosLong, ifMapValue};
                 4: IFnocVal = {addrPE5, interfaceAddr, inputType, zerosLong, ifMapValue};
+                default: begin IFnocVal = {addrPE5, interfaceAddr, inputType, zerosLong, ifMapValue}; end
+
             endcase
             // $display("%m Sending value %b to NOC", nocVal);
             toNOCifmap.Send(IFnocVal);
@@ -166,7 +168,7 @@ module memory(interface memRead, memWrite, T, memRowfilter, memColfilter, memRow
         for (int fx = 0; fx < FILTER_ROWS; fx++) begin
             for (int fy = 0; fy < FILTER_COLS; fy++) begin
                 if(!$feof(fpi)) begin
-                status = $fscanf(fpi,"%d\n", f_data);
+                status = $fscanf(fpi,"%h\n", f_data);
 	            $display("filter data read:%d", f_data);
                 end
                 filterMem[fx][fy] = f_data;
