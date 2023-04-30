@@ -83,7 +83,7 @@ partial_sum#(.ADDER_NUM(5'd6),
                                      .out(intf[11]));
 
 router_4x4_torus #(.FL(2), .BL(1), .WIDTH(64)) r0 (intf[0:15], intf[16:31]);
-memoryController mc (intf[13], intf[12], intf[22]);
+memoryController mc (intf[13], intf[12], intf[22], intf[28]);
 // noc n0 (intff[1], intff[0], intff[2]);
 
 initial begin

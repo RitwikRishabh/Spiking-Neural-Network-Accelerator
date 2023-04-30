@@ -151,7 +151,7 @@ endmodule
 
 module router_4x4_torus(interface in_PE[0:15],interface out_PE[0:15]);
 parameter FL = 2;
-parameter BL = 2;
+parameter BL = 1;
 parameter WIDTH = 32;
 
 Channel #(.hsProtocol(P4PhaseBD), .WIDTH(WIDTH)) intf  [0:47] ();

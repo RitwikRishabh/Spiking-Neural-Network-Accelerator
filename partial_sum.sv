@@ -9,11 +9,15 @@ module partial_sum (interface in, interface out);
     parameter THRESHOLD = 64;
     parameter DESTINATION_ADDRESS = 4'b1010;
     parameter SOURCE_ADDRESS = 4'b0000;
+    parameter FL = 2;
+    parameter BL = 1;
     
     localparam addrPE1 = 4'b0001, addrPE2 = 4'b0101, addrPE3 = 4'b0011, addrPE4 = 4'b0111, addrPE5 = 4'b1100;
+    logic [3:0] addressArray [0:4] = {addrPE4, addrPE3, addrPE2, addrPE1, addrPE5};
     //localparam addrWR = 4'b0000;
     localparam addrMem = 4'b0000;
     localparam outToMemZeroes = {44{1'b0}};
+    localparam outToPEZeroes = {54{1'b0}};
     //localparam membraneToMemZeroes = {46{1'b0}};
     localparam counter = 21;
     localparam done = 10'b11111_11111;
@@ -21,16 +25,16 @@ module partial_sum (interface in, interface out);
     localparam outSpikeType = 2'b11;
 
     logic [WIDTH-1:0] inputPacket = 0;
-    reg [WIDTH_MEMBRANE_POTENTIAL-1:0] partialPE1[5:0], partialPE2[5:0], partialPE3[5:0], partialPE4[5:0], partialPE5[5:0];
+    reg [WIDTH_MEMBRANE_POTENTIAL-1:0] partialPE1[3:0], partialPE2[3:0], partialPE3[3:0], partialPE4[3:0], partialPE5[3:0];
     logic outputSpike;
     logic [WIDTH-1:0] outputPacket;
     logic [9:0] outputSpikeAddr;
     integer count = 0;
     logic  getMembranePotential = 1'b0;
-    logic [12:0] residue_mem[2:0][20:0];
+    logic [12:0] residue_mem[20:0][2:0];
     integer i=0,j=0;
     logic [4:0] count_X = 0, count_Y = 0;
-    logic [4:0] y_addr = 0;
+    logic [4:0] y_addr = ADDER_NUM;
     integer counts = 0;
     int count1=0, count2=0, count3=0, count4=0, count5=0;
 
@@ -41,31 +45,31 @@ module partial_sum (interface in, interface out);
             //$display("Received the packet in the PS%d::::%h",ADDER_NUM, inputPacket );
             case(inputPacket[WIDTH-5:WIDTH-8])
                 addrPE1 : begin
-                    partialPE1[count1%6] = inputPacket[12:0];
+                    partialPE1[count1] = inputPacket[12:0];
                     count1+=1;
                     //counts = counts + 1;
                     // $display("PARTIALPE1:::%d:::%h",partialPE1, inputPacket);
                 end
                 addrPE2 : begin
-                    partialPE2[count2%6] = inputPacket[12:0];
+                    partialPE2[count2] = inputPacket[12:0];
                     count2+=1;
                     //counts = counts + 1;
                     // $display("PARTIALPE2:::%d::::%h",partialPE2, inputPacket);
                 end
                 addrPE3 : begin
-                    partialPE3[count3%6] = inputPacket[12:0];
+                    partialPE3[count3] = inputPacket[12:0];
                     //counts = counts + 1;
                     count3+=1;
                     // $display("PARTIALPE3:::%d::::%h",partialPE3, inputPacket);
                 end
                 addrPE4 : begin
-                    partialPE4[count4%6] = inputPacket[12:0];
+                    partialPE4[count4] = inputPacket[12:0];
                     count4+=1;
                     //counts = counts + 1;
                     // $display("PARTIALPE4:::%d::::%h",partialPE4, inputPacket);
                 end
                 addrPE5 : begin
-                    partialPE5[count5%6] = inputPacket[12:0];
+                    partialPE5[count5] = inputPacket[12:0];
                     count5+=1;
                     //counts = counts + 1;
                     // $display("PARTIALPE5:::%d::::%h",partialPE5, inputPacket);
@@ -102,7 +106,7 @@ module partial_sum (interface in, interface out);
         // //$display("RECEIVED ALL PES!!!!");   
         //$display("%m COUNTSSS:::: %d %d %d %d %d", count1, count2, count3, count4, count5);
 
-        if( !(count1 > counts+6 ||count2 > counts+6 ||count3 > counts+6 || count4 > counts+6 || count5 > counts+6))begin
+        if(!(count1 == 3 && count2 == 3 && count3 == 3 && count4 == 3 && count5 == 3) && !(count1 > 3 ||count2 > 3 ||count3 > 3 || count4 > 3 || count5 > 3))begin
            storePartialSums();
            $display("Total No of packets received in %m is %d",count1+count2+count3+count4+count5);
            $display("Count Split in %m :: PE1:%d PE2:%d PE3:%d PE4:%d PE5:%d", count1, count2, count3, count4, count5);
@@ -112,65 +116,86 @@ module partial_sum (interface in, interface out);
 
 
 
-        if(count1 > counts && count2 > counts && count3 > counts && count4 > counts && count5 > counts) begin
+        if(count1 == 3 && count2 == 3 && count3 == 3 && count4 == 3 && count5 == 3) begin
             if (getMembranePotential) begin
             //storePartialSums(); // Membrane
-            residue_mem[j][i] += partialPE1[counts%6] + partialPE2[counts%6] + partialPE3[counts%6] + partialPE4[counts%6] + partialPE5[counts%6];
+            residue_mem[i][j] += partialPE1[counts] + partialPE2[counts] + partialPE3[counts] + partialPE4[counts] + partialPE5[counts];
             end
             else begin //Calculate first membrane potential
-                residue_mem[j][i] = partialPE1[counts%6] + partialPE2[counts%6] + partialPE3[counts%6] + partialPE4[counts%6] + partialPE5[counts%6];
-                $display("%m DISPLAY RESIDUE MEM:::::%d %d %d %d %d %d %h", residue_mem[j][i], partialPE1[counts],partialPE2[counts],partialPE3[counts],partialPE4[counts],partialPE5[counts], inputPacket[counts]);
+                residue_mem[i][j] = partialPE1[counts] + partialPE2[counts] + partialPE3[counts] + partialPE4[counts] + partialPE5[counts];
+                $display("%m DISPLAY RESIDUE MEM:::::%d %d %d %d %d %d", residue_mem[i][j], partialPE1[counts],partialPE2[counts],partialPE3[counts],partialPE4[counts],partialPE5[counts]);
             end
             counts+=1;
+            if(counts >= 3) begin
+                counts = 0;
+                count1 = 0;
+                count2 = 0;
+                count3 = 0;
+                count4 = 0;
+                count5 = 0;
+            end
 
-            if (residue_mem[j][i] > THRESHOLD) begin
+            if (residue_mem[i][j] > THRESHOLD) begin
                 outputSpike = 1;
                 $display(" %t %m OUTPUT SPIKE:::::%b", $time, outputSpike);
-                residue_mem[j][i] = residue_mem[j][i] - THRESHOLD;
+                residue_mem[i][j] = residue_mem[i][j] - THRESHOLD;
             end
             else begin
                 outputSpike = 0;
             end
 
-            if (j>=2) begin
+            if (i>=20) begin
                     i=0;j=0;
             end
-            else if(i>=20) begin 
-                j = j + 1;
-                i = 0;
+            else if(j>=2) begin 
+                i = i + 1;
+                j = 0;
+                if(SOURCE_ADDRESS == 4'b1101) begin
+                    for(int a = 0; a<5; a++) begin
+                        outputPacket = {addressArray[a], SOURCE_ADDRESS, 2'b10, outToPEZeroes};
+                        out.Send(outputPacket); 
+                        #5;
+                        $display("%m SENT OUTPUT FLAG PACKET::::%h", outputPacket);
+                    end 
+                end
             end
-            else i = i + 1; 
+            else j = j + 1; 
 
             // outputPacket = {ADDER_ADDR, addrMem, membranePotType, membraneToMemZeroes, membranePotential};
             // out.Send(outputPacket);
             if (outputSpike) begin
-                y_addr = (count_Y*7) + ADDER_NUM;
                 outputSpikeAddr = {count_X, y_addr};
-                // $display("COUNT_X:::%b, COUNT_Y::::%b,  %b",count_X, count_Y,{count_X,count_Y});
+                $display("COUNT_X:::%b, COUNT_Y::::%b,  %b",count_X, count_Y,{count_X,y_addr});
                 // $display("OUTPUTSPIKEADDR:::::%b", outputSpikeAddr);
                 outputPacket = {DESTINATION_ADDRESS, SOURCE_ADDRESS, outSpikeType, outToMemZeroes, outputSpikeAddr};
+                #FL;
                 out.Send(outputPacket);
                 $display(" %m SENT OUTPUT PACKET :::::: %h", outputPacket);
+                #BL;
             end
             count = count + 1;
-            if(count_X == 20) begin
+            if(count_X == 20 && count_Y == 2) begin
                 count_X = 0;
                 count_Y = 0;
+                // $stop;
             end
             else if(count_Y == 2) begin
                 count_X = count_X + 1;
                 count_Y = 0;
+
             end else count_Y+=1;
+            y_addr = (count_Y*7) + ADDER_NUM;
 
 
             if (ADDER_COUNT == count) begin
                 outputPacket = {DESTINATION_ADDRESS, SOURCE_ADDRESS, outSpikeType, outToMemZeroes, done};
+                #FL;
                 out.Send(outputPacket);
                 count = 0;
                 getMembranePotential = 1;
+                #BL;
                 // $display("SENT OUTPUT PACKET after time step :::::: %h", outputPacket);
             end
-            #5;
         end
         else #1;
         
@@ -199,7 +224,7 @@ module data_generator (interface r);
     source_address = i % 5; // the range of random number is from 0 to 2^WIDTH
     $display("SOURCE ADDRESS :::: %d", source_address);
     $display("Address_Array:::%b",addr_array[source_address]);
-    SendValue = {PS_ADDRESS, addr_array[source_address], 48'd0, 8'd20};
+    SendValue = {PS_ADDRESS, addr_array[source_address], 48'd0, 8'd10};
     #FL;   // change FL and check the change of performance
      
     //Communication action Send is about to start
@@ -266,7 +291,7 @@ module partial_sum_tb;
 Channel #(.hsProtocol(P4PhaseBD), .WIDTH(64)) intf [1:0] ();
 
 data_generator #(.PS_ADDRESS(4'b0000)) dg (intf[0]);
-partial_sum #(.ADDER_NUM(5'd0)) ps (intf[0], intf[1]);
+partial_sum #(.ADDER_NUM(5'd6)) ps (intf[0], intf[1]);
 data_bucket db (intf[1]);
 
 endmodule

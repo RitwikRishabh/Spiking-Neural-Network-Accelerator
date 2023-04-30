@@ -2,7 +2,7 @@
 import SystemVerilogCSP::*;
 
 //TODO : make array of adder address
-module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, toMemYfilter, toMemXofmap, toMemYofmap, fromMemGetData, toNOCfilter, toNOCifmap, fromNOC, sendPacket); 
+module memory_interface(interface toMemRead, toMemWrite, toMemT_ifmap, toMemT_ofmap, toMemXfilter, toMemYfilter, toMemXofmap, toMemYofmap, fromMemGetData, toNOCfilter, toNOCifmap, fromNOC, sendPacket, fromPE5); 
 
     parameter MEM_LATENCY = 5;
     parameter WIDTH = 8;
@@ -15,7 +15,7 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, t
 
     localparam inputType = 2'b00, kernelType = 2'b01, outputType = 2'b11;
     localparam zerosLong = 29'b0, zerosShort = 14'b0;
-    localparam DONE=10'b1_1111_1111;
+    localparam DONE=10'b11_1111_1111;
 
     int filterX = 5;
     int filterY = 5;
@@ -35,6 +35,7 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, t
     logic [IFMAP_WIDTH-1:0] ifMapValue;
     logic [FILTER_WIDTH-1:0] filterValue;
     logic spikeValue = 0;;
+    logic [WIDTH_NOC-1:0] flag;
     
     // Weight stationary design
     initial begin
@@ -73,7 +74,7 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, t
     always begin
         // get the new ifmaps
         #(MEM_LATENCY*25);
-        toMemT.Send(t); // timestep
+        toMemT_ifmap.Send(t); // timestep
         for (int i = 0; i < ifMapx; i++) begin
             for (int j = 0; j < ifMapy; j++) begin
                 // request the input spikes
@@ -93,12 +94,12 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, t
                 2: IFnocVal = {addrPE3, interfaceAddr, inputType, zerosLong, ifMapValue};
                 3: IFnocVal = {addrPE4, interfaceAddr, inputType, zerosLong, ifMapValue};
                 4: IFnocVal = {addrPE5, interfaceAddr, inputType, zerosLong, ifMapValue};
-                default: begin IFnocVal = {addrPE5, interfaceAddr, inputType, zerosLong, ifMapValue}; end
-
+                default: begin fromPE5.Receive(flag); $display("RECEIVED PE5 FLAG::"); IFnocVal = {addrPE5, interfaceAddr, inputType, zerosLong, ifMapValue}; end
             endcase
+            #12;
             // $display("%m Sending value %b to NOC", nocVal);
             toNOCifmap.Send(IFnocVal);
-
+            #4;
         end
         #MEM_LATENCY;
     end
@@ -107,7 +108,10 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, t
         #MEM_LATENCY;
         // $display("%m Received value %b from NOC", nocVal);
         // $display("NOCALVAL:::::%b",nocVal);
-        if (OpNocVal[WIDTH_NOC-9:WIDTH_NOC-10] == outputType) begin
+        if (OpNocVal[WIDTH_NOC-9:WIDTH_NOC-10] == outputType && OpNocVal[0+:10] == DONE) begin
+            timestepCounter += 1;
+        end
+        else if (OpNocVal[WIDTH_NOC-9:WIDTH_NOC-10] == outputType) begin
             //$display("%m RECEIVED PACKET AT MEM:: %h",nocVal);
             
             // toMemWrite.Send(writeOfmaps);
@@ -115,23 +119,23 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT, toMemXfilter, t
             toMemXofmap.Send(OpNocVal[9:5]);
             // $display("Sending nocalval");
             toMemYofmap.Send(OpNocVal[4:0]);
-            toMemT.Send(t);
-            // $display("MEM TO X ROW::::%b",nocVal[9:5]);
-            // $display("MEM TO Y COLUMN::::%b",nocVal[4:0]);
-        end
-        if (OpNocVal[WIDTH_NOC-9:WIDTH_NOC-10] == outputType && OpNocVal[0+:10] == DONE) begin
-            timestepCounter += 1;
+            toMemT_ofmap.Send(t);
+            $display("%m OpNocVal::::%h", OpNocVal);
+            $display("%m MEM TO X ROW::::%b",OpNocVal[9:5]);
+            $display("%m MEM TO Y COLUMN::::%b",OpNocVal[4:0]);
+            $display("%m T::::%b",t);
         end
         if (timestepCounter == 7) begin
             timestepCounter = 0;
             t += 1;
+            toMemT_ofmap.Send(t);
         end
     end
     
 endmodule
 
 
-module memory(interface memRead, memWrite, T, memRowfilter, memColfilter, memRowofmap, memColofmap, data, receivePacket); 
+module memory(interface memRead, memWrite, T_ifmap, T_ofmap , memRowfilter, memColfilter, memRowofmap, memColofmap, data, receivePacket); 
     parameter TIMESTEPS = 2;
     
     parameter FILTER_ROWS = 5; 
@@ -150,6 +154,7 @@ module memory(interface memRead, memWrite, T, memRowfilter, memColfilter, memRow
     int readType = 0, writeType = 0, row = 0, col = 0, t = 0;
     int i = 0, j = 0, fp = 0, status = 0;
     int fpi = 0, fpi_2=0;
+    logic[5:0] row_ofmap = 0, col_ofmap = 0; 
   
     logic [FILTER_WIDTH-1:0] filterMemPre [0:FILTER_ROWS*FILTER_COLS-1];
     logic ifmapMemPre [0:IFMAP_COLS*IFMAP_ROWS*TIMESTEPS-1];
@@ -168,7 +173,7 @@ module memory(interface memRead, memWrite, T, memRowfilter, memColfilter, memRow
         for (int fx = 0; fx < FILTER_ROWS; fx++) begin
             for (int fy = 0; fy < FILTER_COLS; fy++) begin
                 if(!$feof(fpi)) begin
-                status = $fscanf(fpi,"%h\n", f_data);
+                status = $fscanf(fpi,"%d\n", f_data);
 	            $display("filter data read:%d", f_data);
                 end
                 filterMem[fx][fy] = f_data;
@@ -216,7 +221,7 @@ module memory(interface memRead, memWrite, T, memRowfilter, memColfilter, memRow
 
     always begin
         // Send out ifmap values
-        T.Receive(t);
+        T_ifmap.Receive(t);
         for (int ifx = 0; ifx < IFMAP_ROWS; ifx++) begin
             for (int ify = 0; ify < IFMAP_COLS; ify++) begin
                 fork
@@ -235,14 +240,14 @@ module memory(interface memRead, memWrite, T, memRowfilter, memColfilter, memRow
             // memWrite.Receive(writeType);
     always begin
         receivePacket.Receive(packet);
-        memRowofmap.Receive(row);
-        memColofmap.Receive(col);
-        T.Receive(t);
-        $display("%m Writing to timestep: %b row: %b column: %b", t, row, col);
-        $display("Received the packet in %m :: %h",packet);
+        memRowofmap.Receive(row_ofmap);
+        memColofmap.Receive(col_ofmap);
+        T_ofmap.Receive(t);
+        $display("%m  %t Writing to timestep: %b row: %b column: %b", $time,t, row_ofmap, col_ofmap);
+        $display("%t Received the packet in %m :: %h",$time,packet);
         // $display("FINAL STEPP!!");
         // if (writeType == writeOfmaps) begin
-        ofMapMem[t][row][col] = 1'b1;
+        ofMapMem[t][row_ofmap][col_ofmap] = 1'b1;
         // end
     end
           
@@ -271,9 +276,9 @@ module memory(interface memRead, memWrite, T, memRowfilter, memColfilter, memRow
   endmodule
 
 
-module memoryController(interface toFilter, toIfmap, fromOfmap);
-    Channel #(.hsProtocol(P4PhaseBD), .WIDTH(64)) intf [0:8]();
+module memoryController(interface toFilter, toIfmap, fromOfmap, fromPE5);
+    Channel #(.hsProtocol(P4PhaseBD), .WIDTH(64)) intf [0:9]();
 
-    memory #(.TIMESTEPS(2)) nocMem(.memRead(intf[0]), .memWrite(intf[1]), .T(intf[2]), .memRowfilter(intf[3]), .memColfilter(intf[4]), .memRowofmap(intf[5]), .memColofmap(intf[6]), .data(intf[7]), .receivePacket(intf[8]));
-    memory_interface #(.MEM_LATENCY(5)) nocMemInterface(.toMemRead(intf[0]), .toMemWrite(intf[1]), .toMemT(intf[2]), .toMemXfilter(intf[3]), .toMemYfilter(intf[4]), .toMemXofmap(intf[5]), .toMemYofmap(intf[6]), .fromMemGetData(intf[7]), .toNOCfilter(toFilter), .toNOCifmap(toIfmap), .fromNOC(fromOfmap), .sendPacket(intf[8]));
+    memory #(.TIMESTEPS(2)) nocMem(.memRead(intf[0]), .memWrite(intf[1]), .T_ifmap(intf[2]), .T_ofmap(intf[9]), .memRowfilter(intf[3]), .memColfilter(intf[4]), .memRowofmap(intf[5]), .memColofmap(intf[6]), .data(intf[7]), .receivePacket(intf[8]));
+    memory_interface #(.MEM_LATENCY(5)) nocMemInterface(.toMemRead(intf[0]), .toMemWrite(intf[1]), .toMemT_ifmap(intf[2]), .toMemT_ofmap(intf[9]), .toMemXfilter(intf[3]), .toMemYfilter(intf[4]), .toMemXofmap(intf[5]), .toMemYofmap(intf[6]), .fromMemGetData(intf[7]), .toNOCfilter(toFilter), .toNOCifmap(toIfmap), .fromNOC(fromOfmap), .sendPacket(intf[8]), .fromPE5(fromPE5));
 endmodule
