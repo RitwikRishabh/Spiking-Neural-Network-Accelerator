@@ -56,18 +56,25 @@ module packetizerConv(interface psumOut, interface addrIn, interface convDone, i
         //convDone.Send(noOfRowsDone);
         noOfRowsDone+=1;
         #FL;
-        case (PE_ADDRESS)
+        if(noOfRowsDone != 21) begin
+           case (PE_ADDRESS)
             addrPE2 : begin packetValue2 = {addrPE1, PE_ADDRESS, 2'b00, 29'b0, ifmapValue}; packet.Send(packetValue2); end
             addrPE3 : begin packetValue2 = {addrPE2, PE_ADDRESS, 2'b00, 29'b0, ifmapValue}; packet.Send(packetValue2); end
             addrPE4 : begin packetValue2 = {addrPE3, PE_ADDRESS, 2'b00, 29'b0, ifmapValue}; packet.Send(packetValue2); end
             addrPE5 : begin packetValue2 = {addrPE4, PE_ADDRESS, 2'b00, 29'b0, ifmapValue}; packet.Send(packetValue2); end
             default : begin packetValue2 = 64'b0; end
-        endcase
-        $display("%m packet value2 is %b", packetValue2);
-        //wait(packet.status == idle);
-        $display("%m DESTINATION_ADDRESS::%b, SOURCE_ADDRESS::%b",packetValue2[63:60],PE_ADDRESS);
-        $display("\n%m Sent the packet2:: %h\n",packetValue2);
-        if(PE_ADDRESS == 4'b1100) packet.Send({4'd0, PE_ADDRESS, 56'd0});
+            endcase
+            $display("%m packet value2 is %b", packetValue2);
+            //wait(packet.status == idle);
+            $display("%m DESTINATION_ADDRESS::%b, SOURCE_ADDRESS::%b",packetValue2[63:60],PE_ADDRESS);
+            $display("\n%m Sent the packet2:: %h\n",packetValue2);
+            if(PE_ADDRESS == 4'b1100) packet.Send({4'd0, PE_ADDRESS, 56'd0}); 
+        end
+        // if(noOfRowsDone >=21 && PE_ADDRESS == 4'b1100) begin 
+        //     noOfRowsDone = 0;
+        //     packet.Send({4'd0, PE_ADDRESS, 56'd0});
+        // end
+        //else 
         if(noOfRowsDone >=21) noOfRowsDone = 0;
         #BL;
     end

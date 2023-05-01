@@ -146,6 +146,14 @@ module partial_sum (interface in, interface out);
 
             if (i>=20) begin
                     i=0;j=0;
+                if(SOURCE_ADDRESS == 4'b1101) begin
+                    for(int a = 0; a<5; a++) begin
+                        outputPacket = {addressArray[a], SOURCE_ADDRESS, 2'b10, outToPEZeroes};
+                        out.Send(outputPacket); 
+                        #5;
+                        $display("%m SENT OUTPUT FLAG PACKET::::%h", outputPacket);
+                    end 
+                end
             end
             else if(j>=2) begin 
                 i = i + 1;
@@ -194,6 +202,7 @@ module partial_sum (interface in, interface out);
                 count = 0;
                 getMembranePotential = 1;
                 #BL;
+                $display("Reached HERE!!!!");
                 // $display("SENT OUTPUT PACKET after time step :::::: %h", outputPacket);
             end
         end

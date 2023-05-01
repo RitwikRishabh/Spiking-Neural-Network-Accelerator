@@ -101,7 +101,8 @@ module memory_interface(interface toMemRead, toMemWrite, toMemT_ifmap, toMemT_of
             toNOCifmap.Send(IFnocVal);
             #4;
         end
-        #MEM_LATENCY;
+        //fromPE5.Receive(flag);
+        wait(t==1);
     end
     always begin
         fromNOC.Receive(OpNocVal);
@@ -153,7 +154,7 @@ module memory(interface memRead, memWrite, T_ifmap, T_ofmap , memRowfilter, memC
 
     int readType = 0, writeType = 0, row = 0, col = 0, t = 0;
     int i = 0, j = 0, fp = 0, status = 0;
-    int fpi = 0, fpi_2=0;
+    int fpi = 0, fp1 = 0, fpi_2=0;
     logic[5:0] row_ofmap = 0, col_ofmap = 0; 
   
     logic [FILTER_WIDTH-1:0] filterMemPre [0:FILTER_ROWS*FILTER_COLS-1];
@@ -252,15 +253,17 @@ module memory(interface memRead, memWrite, T_ifmap, T_ofmap , memRowfilter, memC
     end
           
     initial begin
-        wait(t==1);
+        wait(t==1)
         fp = $fopen("out1_test.txt");
+        fp1 = $fopen("out1.txt");
         for(i = 0; i < 21; i+=1) begin
             for(j=0;j<21;j+=1) begin
                 $fdisplay(fp,"OF MAP TIMESTEP 1 LOCATION %d, %d, OUTPUT:: %b", i, j, ofMapMem[0][i][j]);
+                $fdisplay(fp1,"%b", ofMapMem[0][i][j]);
             end
         end
         $fclose(fp);
-        $stop;
+        // $stop;
         wait(t==2);
         fp = $fopen("out2_test.txt");
         for(i = 0; i < 21; i+=1) begin
